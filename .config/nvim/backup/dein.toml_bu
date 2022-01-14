@@ -1,0 +1,171 @@
+[[plugins]] # Linter
+repo = "dense-analysis/ale"
+
+[[plugins]] # endを自動入力
+repo = 'tpope/vim-endwise'
+
+[[plugins]] # 閉じカッコを自動挿入
+repo = 'jiangmiao/auto-pairs'
+
+[[plugins]] # コメントアウト
+repo = 'scrooloose/nerdcommenter'
+hook_add = '''
+  let g:NERDCreateDefaultMappings = 0
+  let NERDSpaceDelims = 1
+'''
+
+[[plugins]] # ステータスラインカスタム
+repo = 'itchyny/lightline.vim'
+hook_add = '''
+  let g:lightline = {'colorscheme': 'jellybeans'}
+  let g:lightline_hybrid_style = 'plain'
+  set laststatus=2
+  set noshowmode
+'''
+
+[[plugins]] # インデントの視認性向上
+repo = 'Yggdroot/indentLine'
+hook_add = '''
+  let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+'''
+
+[[plugins]] # git差分表示
+repo = 'airblade/vim-gitgutter'
+hook_add = '''
+  set signcolumn=yes
+  set updatetime=100
+  let g:gitgutter_map_keys = 0
+  let g:gitgutter_async = 1
+  let g:gitgutter_sign_added = '+'
+  let g:gitgutter_sign_modified = '~'
+  let g:gitgutter_sign_removed = '-'
+  let g:gitgutter_sign_removed_first_line = '^'
+  let g:gitgutter_sign_modified_removed = '<'
+  highlight GitGutterAdd ctermfg=green
+  highlight GitGutterChange ctermfg=yellow
+  highlight GitGutterDelete ctermfg=red
+  highlight GitGutterChangeDelete ctermfg=yellow
+'''
+
+[[plugins]] # icons
+repo = 'ryanoasis/vim-devicons'
+
+[[plugins]] # fzf
+repo = 'junegunn/fzf'
+
+[[plugins]] # fzf.vim
+repo = 'junegunn/fzf.vim'
+on_cmd = [
+  'Files',
+  'ProjectFiles',
+  'Buffers',
+  'BLines',
+  'History',
+  'Tags',
+  'BTags',
+  'GFiles',
+  'Ag',
+]
+hook_add = '''
+  nnoremap <Space>r :Rg<CR>
+  nnoremap <Space>p :<C-u>Files<CR>
+  nnoremap <Space>g :<C-u>GFiles<CR>
+  nnoremap <Space>b :<C-u>Buffers<CR>
+  nnoremap <Space>h :<C-u>History<CR>
+  nnoremap <Space>w :<C-u>Windows<CR>
+  nnoremap <Space>f :<C-u>BLines<CR>
+  set rtp+=~/.fzf "~/.fzfにインストールした場合
+'''
+
+[[plugins]] # HTML等の閉じタグ自動付与
+repo = 'alvan/vim-closetag'
+on_ft = ['html', 'xhtml', 'javascript', 'typescript', 'javascript.jsx', 'typescript.tsx']
+hook_add = '''
+  let g:closetag_filenames='*.html'
+  let g:closetag_xhtml_filenames='*.jsx,*.tsx,*.vue'
+  let g:closetag_filetypes='html'
+  let g:closetag_xhtml_filetypes='jsx,tsx,javascript.jsx,typescript.tsx,vue'
+  let g:closetag_emptyTags_caseSensitive=1
+  let g:closetag_shortcut='>'
+'''
+
+[[plugins]] # undo履歴をツリー表示
+repo = 'mbbill/undotree'
+hook_add = '''
+  if has("persistent_undo")
+    set undodir=$XDG_CACHE_HOME/undodir/
+    set undofile
+  endif
+  let g:undotree_WindowLayout = 2 
+  let g:undotree_ShortIndicators = 1
+  let g:undotree_SplitWidth = 30
+  let g:undotree_SetFocusWhenToggle = 1
+  let g:undotree_DiffpanelHeight = 8
+  function! g:Undotree_CustomMap()
+    map <silent> <buffer> <Esc> q
+  endfunction
+'''
+
+[[plugins]] # current dir to project root
+repo = 'airblade/vim-rooter'
+
+[[plugins]] # filer
+repo = 'lambdalisue/fern.vim'
+hook_add = '''
+  let g:fern#default_hidden=1
+  let g:fern#disable_default_mappings=1
+  function! s:init_fern() abort
+    nmap <buffer><nowait> l <Plug>(fern-action-expand)
+    nmap <buffer><nowait> h <Plug>(fern-action-collapse)
+    nmap <buffer><nowait> D <Plug>(fern-action-remove)
+    nmap <buffer><nowait> c <Plug>(fern-action-copy)
+    nmap <buffer><nowait> m <Plug>(fern-action-move)
+    nmap <buffer><nowait> N <Plug>(fern-action-new-file)
+    nmap <buffer><nowait> R <plug>(fern-action-rename)
+    nmap <buffer><nowait> <Return> <Plug>(fern-action-open)
+  endfunction
+  augroup fern-custom
+    autocmd! *
+    autocmd FileType fern call s:init_fern()
+  augroup END
+'''
+
+[[plugins]] # filerにアイコンを表示
+repo = 'lambdalisue/nerdfont.vim'
+[[plugins]]
+repo = 'lambdalisue/fern-renderer-nerdfont.vim'
+hook_add = '''
+  let g:fern#renderer = 'nerdfont'
+'''
+[[plugins]]
+repo = 'lambdalisue/glyph-palette.vim'
+hook_add = '''
+  augroup my-glyph-palette
+    autocmd! *
+    autocmd FileType fern call glyph_palette#apply()
+    autocmd FileType nerdtree,startify call glyph_palette#apply()
+  augroup END
+'''
+
+[[plugins]]# fernでプレビューを表示
+repo = 'yuki-yano/fern-preview.vim'
+
+[[plugins]] # filerにgitの状態を表示
+repo = 'lambdalisue/fern-git-status.vim'
+hook_add = '''
+  function! s:fern_settings() abort
+    nmap <silent> <buffer> p     <Plug>(fern-action-preview:toggle)
+    nmap <silent> <buffer> <C-p> <Plug>(fern-action-preview:auto:toggle)
+    nmap <silent> <buffer> <C-d> <Plug>(fern-action-preview:scroll:down:half)
+    nmap <silent> <buffer> <C-u> <Plug>(fern-action-preview:scroll:up:half)
+    nmap <silent> <buffer> <expr> <Plug>(fern-quit-or-close-preview) fern_preview#smart_preview("\<Plug>(fern-action-preview:close)", ":q\<CR>")
+    nmap <silent> <buffer> q <Plug>(fern-quit-or-close-preview)
+  endfunction
+  augroup fern-settings
+    autocmd!
+    autocmd FileType fern call s:fern_settings()
+  augroup END
+'''
+
+[[plugins]] # 置換補助
+repo = 'brooth/far.vim'

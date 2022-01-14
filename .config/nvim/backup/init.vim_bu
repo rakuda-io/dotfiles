@@ -1,0 +1,149 @@
+" PythonのPathを設定
+let g:python3_host_prog = '/usr/local/bin/python3'
+
+" dein.vimの設定ファイルを読み込む
+runtime! plugins/dein.rc.vim
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+" Color schem
+colorscheme hybrid
+
+" Leaderキー変更
+let mapleader = "\<Space>"
+
+" clipboard連携
+set clipboard+=unnamed
+
+" 非アクティブウインドウの背景を白っぽくする
+augroup ChangeBackground
+  autocmd!
+  autocmd WinEnter * highlight Normal guibg=default
+  autocmd WinEnter * highlight NormalNC guibg='#474444'
+  autocmd FocusGained * highlight Normal guibg=default
+  autocmd FocusLost * highlight Normal guibg='#474444'
+augroup END
+
+" 検索のハイライトを消す
+nmap <silent><Esc><Esc> :nohl<CR>
+
+" fzfでの検索候補の展開方法
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+" fzf
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" プロジェクトルートをカレントディレクトリにする設定
+let g:rooter_change_directory_for_non_project_files = 'current'
+
+" `:Rg` でカレントディレクトリ以下のgrep (ripgrep)、プレビュー付き
+if executable('rg')
+    command! -bang -nargs=* Rg
+        \ call fzf#vim#grep(
+        \   'rg --line-number --no-heading '.shellescape(<q-args>), 0,
+        \   fzf#vim#with_preview({'options': '--exact --reverse --delimiter : --nth 3..'}, 'up:50%:wrap'))
+endif
+
+" aleとcoc.nvimを連携
+let g:ale_disable_lsp = 1
+let g:ale_lint_on_text_changed = 1
+
+" コメントアウトのキーバインド変更
+nmap <Leader>/ <Plug>NERDCommenterToggle
+vmap <Leader>/ <Plug>NERDCommenterToggle
+nmap <Leader>/a <Plug>NERDCommenterAppend
+
+" undo履歴tree表示
+noremap <Leader>u :UndotreeToggle<CR>
+
+" InsertモードでEmacsキーバインドを使えるようにする
+imap <C-p> <Up>
+imap <C-n> <Down>
+imap <C-b> <Left>
+imap <C-f> <Right>
+imap <C-a> <Home>
+imap <C-e> <End>
+imap <C-d> <Del>
+imap <C-h> <BS>
+imap <C-k> <ESC>d$i
+imap <C-y> <ESC>pi
+
+" NormalモードでEmacsキーバインドを使えるようにする
+nmap <C-f> <Right>
+nmap <C-b> <Left>
+nmap <C-a> <Home>
+nmap <C-e> <End>
+
+" VisualモードでEmacsキーバインドを使えるようにする
+vmap <C-a> <Home>
+vmap <C-e> <End>
+" Insertモードをjjで抜けて保存もする
+inoremap <silent> jj <ESC>:w<CR>
+
+" Visual Line modeにスペース2回で移行する
+nmap <Leader><Leader> V
+
+set number " 行を表示
+set termguicolors " True Color表示に対応
+set cursorline " カーソルラインを表示
+set incsearch  " インクリメンタルサーチを行う
+set ignorecase " 大文字と小文字を区別しない
+set smartcase  " 大文字と小文字が混在した言葉で検索を行った場合に限り、大文字と小文字を区別する
+set wrapscan   " 最後尾まで検索を終えたら次の検索で先頭に移る
+set hlsearch " 検索結果をハイライト
+set helplang=ja " ヘルプを日本語化
+set smartindent "C系の文法に従って自動インデント、{}とかに反応する
+set backspace=indent,eol,start " Backspaceキーの影響範囲に制限を設けない
+set whichwrap=b,s,h,l,<,>,[,]  " 行頭行末の左右移動で行をまたぐ
+set nobackup   " ファイル保存時にバックアップファイルを作らない
+set noswapfile " ファイル編集中にスワップファイルを作らない
+set expandtab     " タブ入力を複数の空白入力に置き換える
+set tabstop=2     " 画面上でタブ文字が占める幅
+set shiftwidth=2  " 自動インデントでずれる幅
+set softtabstop=2 " 連続した空白に対してタブキーやバックスペースキーでカーソルが動く幅
+set autoindent    " 改行時に前の行のインデントを継続する
+set smartindent   " 改行時に入力された行の末尾に合わせて次の行のインデントを増減する
+set wildmenu wildmode=list:longest,full " コマンドラインモードでTABキーによるファイル名補完を有効にする
+set history=10000 " コマンドラインモードでTABキーによるファイル名補完を有効にする
+
+" 画面分割キーマップ
+nnoremap sv :<C-u>vs<CR><C-w>l
+nnoremap ss :<C-u>sp<CR><C-w>j
+nnoremap s<C-n> <C-w>j
+nnoremap s<C-p> <C-w>k
+nnoremap s<C-f> <C-w>l
+nnoremap s<C-b> <C-w>h
+
+" 現在のバッファを削除
+nnoremap bd :bd<CR>
+
+" FernでCtrl+nでファイルツリーを表示/非表示する
+nnoremap <Leader>e :Fern . -reveal=% -drawer -toggle -width=40<CR>
+
+"" git操作
+" g]で前の変更箇所へ移動する
+nnoremap g[ :GitGutterPrevHunk<CR>
+" g[で次の変更箇所へ移動する
+nnoremap g] :GitGutterNextHunk<CR>
+" ghでdiffをハイライトする
+nnoremap gh :GitGutterLineHighlightsToggle<CR>
+" gpでカーソル行のdiffを表示する
+nnoremap gp :GitGutterPreviewHunk<CR>
+
+" far.vim
+let g:far#enable_undo=2
+" farの検索をrgにする
+let g:far#source="rgnvim"
+set lazyredraw " improve scrolling performance when navigating through large results
+set regexpengine=1 " use old regexp engine
+let g:far#collapse_result=1 " File単位表示(件数が多いとカクつくため)
+" ctrl + g で置換のショートカット
+nnoremap <C-g> :Far  **/*<Left><Left><Left><Left><Left>
+" ctrl + s で検索のショートカット
+nnoremap <C-s> :F  **/*<Left><Left><Left><Left><Left>
+let g:far#window_layout="tab"

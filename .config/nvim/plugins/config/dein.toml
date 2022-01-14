@@ -1,0 +1,307 @@
+[[plugins]] # plugin manager
+repo = 'Shougo/dein.vim'
+
+[[plugins]]
+repo = 'Lokaltog/vim-powerline'
+
+[[plugins]] # lightlineにALE情報を載せる
+repo = 'maximbaz/lightline-ale'
+
+[[plugins]] # ステータスラインカスタム
+repo = 'itchyny/lightline.vim'
+hook_add = '''
+  let g:lightline_hybrid_style = 'plain'
+  set laststatus=2
+  set noshowmode
+  let g:lightline = {
+        \ 'mode_map': {'c': 'NORMAL'},
+        \ 'component_expand': {'linter_errors': 'lightline#ale#errors'},
+        \ 'component_type': {'linter_errors': 'error'},
+        \ 'active': {
+        \   'left': [
+        \     ['mode', 'paste'],
+        \     ['fugitive', 'gitgutter', 'filename'],
+        \   ],
+        \   'right': [
+        \     ['lineinfo', 'syntastic'],
+        \     ['percent'],
+        \     ['fileencoding', 'filetype', 'linter_errors'],
+        \   ]
+        \ },
+        \ 'component_function': {
+        \   'modified': 'MyModified',
+        \   'readonly': 'MyReadonly',
+        \   'fugitive': 'MyFugitive',
+        \   'filename': 'MyFilename',
+        \   'fileformat': 'MyFileformat',
+        \   'filetype': 'MyFiletype',
+        \   'fileencoding': 'MyFileencoding',
+        \   'mode': 'MyMode',
+        \   'syntastic': 'SyntasticStatuslineFlag',
+        \   'charcode': 'MyCharCode',
+        \   'gitgutter': 'MyGitGutter',
+        \ },
+        \ }
+
+function! MyModified()
+  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! MyReadonly()
+  return &ft !~? 'help\|vimfiler\|gundo' && &ro ? '⭤' : ''
+endfunction
+
+function! MyFilename()
+  return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+        \  &ft == 'unite' ? unite#get_status_string() :
+        \  &ft == 'vimshell' ? substitute(b:vimshell.current_dir,expand('~'),'~','') :
+        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+        \ ('' != MyModified() ? ' ' . MyModified() : '')
+endfunction
+
+function! MyFugitive()
+  try
+    if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
+      let _ = fugitive#head()
+      return strlen(_) ? '⭠ '._ : ''
+    endif
+  catch
+  endtry
+  return ''
+endfunction
+
+function! MyFileformat()
+  return winwidth('.') > 70 ? &fileformat : ''
+endfunction
+
+function! MyFiletype()
+  return winwidth('.') > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+endfunction
+
+function! MyFileencoding()
+  return winwidth('.') > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+endfunction
+
+function! MyMode()
+  return winwidth('.') > 60 ? lightline#mode() : ''
+endfunction
+
+function! MyGitGutter()
+  if ! exists('*GitGutterGetHunkSummary')
+        \ || ! get(g:, 'gitgutter_enabled', 0)
+        \ || winwidth('.') <= 90
+    return ''
+  endif
+  let symbols = [
+        \ g:gitgutter_sign_added . ' ',
+        \ g:gitgutter_sign_modified . ' ',
+        \ g:gitgutter_sign_removed . ' '
+        \ ]
+  let hunks = GitGutterGetHunkSummary()
+  let ret = []
+  for i in [0, 1, 2]
+    if hunks[i] > 0
+      call add(ret, symbols[i] . hunks[i])
+    endif
+  endfor
+  return join(ret, ' ')
+endfunction
+
+" https://github.com/Lokaltog/vim-powerline/blob/develop/autoload/Powerline/Functions.vim
+function! MyCharCode()
+  if winwidth('.') <= 70
+    return ''
+  endif
+
+  " Get the output of :ascii
+  redir => ascii
+  silent! ascii
+  redir END
+
+  if match(ascii, 'NUL') != -1
+    return 'NUL'
+  endif
+
+  " Zero pad hex values
+  let nrformat = '0x%02x'
+
+  let encoding = (&fenc == '' ? &enc : &fenc)
+
+  if encoding == 'utf-8'
+    " Zero pad with 4 zeroes in unicode files
+    let nrformat = '0x%04x'
+  endif
+
+  " Get the character and the numeric value from the return value of :ascii
+  " This matches the two first pieces of the return value, e.g.
+  " "<F>  70" => char: 'F', nr: '70'
+  let [str, char, nr; rest] = matchlist(ascii, '\v\<(.{-1,})\>\s*([0-9]+)')
+
+  " Format the numeric value
+  let nr = printf(nrformat, nr)
+
+  return "'". char ."' ". nr
+endfunction
+'''
+
+[[plugins]] # インデントの視認性向上
+repo = 'Yggdroot/indentLine'
+hook_add = '''
+  let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+'''
+
+[[plugins]] # ()をカラー表示に
+repo = 'luochen1990/rainbow'
+hook_add = '''
+    let g:rainbow_active = 1
+'''
+
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+
+[[plugins]] # git差分表示
+repo = 'airblade/vim-gitgutter'
+hook_add = '''
+  set signcolumn=yes
+  set updatetime=100
+  let g:gitgutter_map_keys = 0
+  let g:gitgutter_async = 1
+  let g:gitgutter_sign_added = '+'
+  let g:gitgutter_sign_modified = '~'
+  let g:gitgutter_sign_removed = '-'
+  let g:gitgutter_sign_removed_first_line = '^'
+  let g:gitgutter_sign_modified_removed = '<'
+  highlight GitGutterAdd ctermfg=green
+  highlight GitGutterChange ctermfg=yellow
+  highlight GitGutterDelete ctermfg=red
+  highlight GitGutterChangeDelete ctermfg=yellow
+'''
+
+[[plugins]] # カレントディレクトリをプロジェクトルートに
+repo = 'mattn/vim-findroot'
+hook_add = '''
+  let g:findroot_patterns = [
+    \  '.git/',
+    \  '.svn/',
+    \  '.hg/',
+    \  '.bzr/',
+    \  '.gitignore',
+    \  'Rakefile',
+    \  'pom.xml',
+    \  'project.clj',
+    \  '*.csproj',
+    \  '*.sln',
+    \]
+  let g:findroot_not_for_subdir = 0
+'''
+
+[[plugins]] # FILE tree
+repo = 'lambdalisue/fern.vim'
+hook_add = '''
+  let g:fern#default_hidden=1
+  let g:fern#disable_default_mappings=1
+  function! s:init_fern() abort
+    nmap <buffer><nowait> l <Plug>(fern-action-expand)
+    nmap <buffer><nowait> h <Plug>(fern-action-collapse)
+    nmap <buffer><nowait> D <Plug>(fern-action-remove)
+    nmap <buffer><nowait> c <Plug>(fern-action-copy)
+    nmap <buffer><nowait> m <Plug>(fern-action-move)
+    nmap <buffer><nowait> N <Plug>(fern-action-new-file)
+    nmap <buffer><nowait> R <plug>(fern-action-rename)
+    nmap <buffer><nowait> <Return> <Plug>(fern-action-open)
+  endfunction
+  augroup fern-custom
+    autocmd! *
+    autocmd FileType fern call s:init_fern()
+  augroup END
+'''
+
+[[plugins]] # fernにアイコンを表示
+repo = 'lambdalisue/nerdfont.vim'
+[[plugins]]
+repo = 'lambdalisue/fern-renderer-nerdfont.vim'
+hook_add = '''
+  let g:fern#renderer = 'nerdfont'
+'''
+[[plugins]]
+repo = 'lambdalisue/glyph-palette.vim'
+hook_add = '''
+  augroup my-glyph-palette
+    autocmd! *
+    autocmd FileType fern call glyph_palette#apply()
+    autocmd FileType nerdtree,startify call glyph_palette#apply()
+  augroup END
+'''
+
+[[plugins]]# fernでプレビューを表示
+repo = 'yuki-yano/fern-preview.vim'
+
+[[plugins]] # fernにgitの状態を表示
+repo = 'lambdalisue/fern-git-status.vim'
+hook_add = '''
+  function! s:fern_settings() abort
+    nmap <silent> <buffer> p     <Plug>(fern-action-preview:toggle)
+    nmap <silent> <buffer> <C-p> <Plug>(fern-action-preview:auto:toggle)
+    nmap <sient> <buffer> <C-d> <Plug>(fern-action-preview:scroll:down:half)
+    nmap <silent> <buffer> <C-u> <Plug>(fern-action-preview:scroll:up:half)
+    nmap <silent> <buffer> <expr> <Plug>(fern-quit-or-close-preview) fern_preview#smart_preview("\<Plug>(fern-action-preview:close)", ":q\<CR>")
+    nmap <silent> <buffer> q <Plug>(fern-quit-or-close-preview)
+  endfunction
+  augroup fern-settings
+    autocmd!
+    autocmd FileType fern call s:fern_settings()
+  augroup END
+'''
+
+[[plugins]] # endを自動入力
+repo = 'tpope/vim-endwise'
+
+[[plugins]] # 閉じカッコを自動挿入
+repo = 'jiangmiao/auto-pairs'
+
+[[plugins]] # コメントアウト
+repo = 'scrooloose/nerdcommenter'
+hook_add = '''
+  let g:NERDCreateDefaultMappings = 0
+  let NERDSpaceDelims = 1
+'''
+
+[[plugins]] # vim内でのicon表示
+repo = 'ryanoasis/vim-devicons'
+
+[[plugins]] # fzf本体
+repo = 'junegunn/fzf'
+build = './install --all'
+merged = '0'
+
+[[plugins]] # coc.nvim
+repo = 'neoclide/coc.nvim'
+rev = 'release' 
+merged = '0'
+
+[[plugins]] # ale
+repo = 'w0rp/ale'
+hook_add = '''
+  highlight clear ALEError
+    highlight clear ALEWarning
+    let g:ale_lint_on_enter = 0
+    let g:ale_sign_column_always = 1
+    let g:ale_set_loclist = 0
+    let g:ale_set_quickfix = 1
+    if has('mac')
+        let s:header_path = '-I/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include'
+        let g:ale_cpp_clang_options = '-std=c++14 -Wall ' . s:header_path
+        let g:ale_cpp_gcc_options = '-std=c++14 -Wall ' . s:header_path
+    endif
+    let g:ale_linters = {
+                \ 'c': ['clangd'],
+                \ 'cpp' : ['clangd']
+    \ }
+'''
+
+[[plugins]] # undo履歴
+repo = 'mbbill/undotree'
+hook_add = '''
+  nmap U :UndotreeToggle<CR>
+'''
