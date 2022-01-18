@@ -25,7 +25,7 @@ hook_add = '''
         \   'right': [
         \     ['lineinfo', 'syntastic'],
         \     ['percent'],
-        \     ['fileencoding', 'filetype', 'linter_errors'],
+        \     ['filetype', 'linter_errors'],
         \   ]
         \ },
         \ 'component_function': {
@@ -157,7 +157,7 @@ hook_add = '''
     let g:rainbow_active = 1
 '''
 
-[[plugins]]
+[[plugins]] # git操作
 repo = 'tpope/vim-fugitive'
 
 [[plugins]] # git差分表示
@@ -173,7 +173,7 @@ hook_add = '''
   let g:gitgutter_sign_removed_first_line = '^'
   let g:gitgutter_sign_modified_removed = '<'
   highlight GitGutterAdd ctermfg=green
-  highlight GitGutterChange ctermfg=yellow
+  highlight GitGutterChange ctermfg=blue
   highlight GitGutterDelete ctermfg=red
   highlight GitGutterChangeDelete ctermfg=yellow
 '''
@@ -200,7 +200,6 @@ hook_add = '''
 repo = 'lambdalisue/fern.vim'
 hook_add = '''
   let g:fern#default_hidden=1
-  let g:fern#disable_default_mappings=1
   function! s:init_fern() abort
     nmap <buffer><nowait> l <Plug>(fern-action-expand)
     nmap <buffer><nowait> h <Plug>(fern-action-collapse)
@@ -305,3 +304,26 @@ repo = 'mbbill/undotree'
 hook_add = '''
   nmap U :UndotreeToggle<CR>
 '''
+
+[[plugins]] # ctags自動更新
+repo = 'szw/vim-tags'
+hook_add = '''
+  let g:vim_tags_project_tags_command = "/usr/local/bin/ctags -f .tags -R . 2>/dev/null"
+  let g:vim_tags_gems_tags_command = "/usr/local/bin/ctags -R -f .Gemfile.lock.tags `bundle show --paths` 2>/dev/null"
+  set tags+=.tags
+  set tags+=.Gemfile.lock.tags
+  nnoremap <C-]> g<C-]>
+'''
+
+[[plugins]] # railsの支援
+repo = 'tpope/vim-rails'
+
+[[plugins]] # シンタックス詰め合わせ
+repo = 'sheerun/vim-polyglot'
+hook_add = '''
+  let g:polyglot_disabled = ['typescript']
+'''
+
+[[plugins]]
+repo = 'liuchengxu/vista.vim'
+depends = ['coc.nvim', 'lightline.vim']
