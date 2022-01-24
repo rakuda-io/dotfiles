@@ -58,6 +58,17 @@ inoremap <silent> jj <ESC>:w<CR>
 " Visual Line modeにスペース2回で移行する
 nmap <Leader><Leader> V
 
+" 画面分割キーマップ
+nnoremap sv :<C-u>vs<CR><C-w>l
+nnoremap ss :<C-u>sp<CR><C-w>j
+
+" 行ごと移動
+vnoremap <silent>J :m'>+1<CR>gv=gv
+vnoremap <silent>K :m-2<CR>gv=gv
+nnoremap <silent>J :m+<CR>==
+nnoremap <silent>K :m-2<CR>==
+
+
 set number " 行を表示
 set termguicolors " True Color表示に対応
 set cursorline " カーソルラインを表示
@@ -81,10 +92,9 @@ set smartindent   " 改行時に入力された行の末尾に合わせて次の
 set wildmenu wildmode=list:longest,full " コマンドラインモードでTABキーによるファイル名補完を有効にする
 set history=10000 " コマンドラインモードでTABキーによるファイル名補完を有効にする
 
-" 画面分割キーマップ
-nnoremap sv :<C-u>vs<CR><C-w>l
-nnoremap ss :<C-u>sp<CR><C-w>j
 
+
+"""""""""""""""""""""""""""""""""""Tabs"""""""""""""""""""""""""""""""""""
 " Anywhere SID.
 function! s:SID_PREFIX()
   return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
@@ -112,7 +122,8 @@ endfunction "}}}
 let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
 set showtabline=2 " 常にタブラインを表示
 
-" The prefix key.
+
+" Prefix key.
 nnoremap    [Tag]   <Nop>
 nmap    t [Tag]
 " Tab jump
@@ -121,20 +132,17 @@ for n in range(1, 9)
 endfor
 " t1 で1番左のタブ、t2 で1番左から2番目のタブにジャンプ
 
+" 新しいタブを一番右に作る
 map <silent> [Tag]c :tablast <bar> tabnew<CR>
-" tc 新しいタブを一番右に作る
+" タブを閉じる
 map <silent> [Tag]x :tabclose<CR>
-" tx タブを閉じる
-map <silent> [Tag]n :tabnext<CR>
-" tn 次のタブ
-map <silent> [Tag]p :tabprevious<CR>
-" tp 前のタブ
+" 次のタブ
+map <silent> [Tag]h :tabnext<CR>
+" 前のタブ
+map <silent> [Tag]l :tabprevious<CR>
+" 今開いてるタブ以外を閉じる
+map <silent> [Tag]o :tabo<CR>
 
-" 行ごと移動
-vnoremap <silent>J :m'>+1<CR>gv=gv
-vnoremap <silent>K :m-2<CR>gv=gv
-nnoremap <silent>J :m+<CR>==
-nnoremap <silent>K :m-2<CR>==
 
 " FernでCtrl+nでファイルツリーを表示/非表示する
 nnoremap <Leader>e :Fern . -reveal=% -drawer -toggle -width=40<CR>
@@ -149,8 +157,10 @@ nnoremap gh :GitGutterLineHighlightsToggle<CR>
 " gpでカーソル行のdiffを表示する
 nnoremap gp :GitGutterPreviewHunk<CR>
 
-" fzf-preview.vim settings
-" fzf Leaderキー
+
+
+"""""""""""""""""""""""""""""""""""fzf-preview"""""""""""""""""""""""""""""""""""
+" Leaderキー
 nmap <Leader>f <fzf-p>
 xmap <Leader>f <fzf-p>
 
@@ -232,5 +242,11 @@ function! s:fzf_preview_settings() abort
   call remove(g:fzf_preview_custom_processes['git-status'], 'ctrl-x')
 endfunction
 
- "Undo tree
-"nmap U <Plug>(easymotion-overwin-f2)
+" frでカーソル位置の単語をファイル検索
+nnoremap f* vawy:Rg <C-R>"<CR>
+" frで選択した単語をファイル検索
+xnoremap f* y:Rg <C-R>"<CR>
+" fRでPC全体の閲覧履歴検索
+nnoremap fR :History<CR>
+" fPでプロジェクト全体のGit管理下のファイル検索（.gitが複数あっても一番親ディレクトリで検索）
+nnoremap fP :GFiles<CR>

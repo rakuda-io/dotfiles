@@ -274,6 +274,9 @@ repo = 'junegunn/fzf'
 build = './install --all'
 merged = '0'
 
+[[plugins]]
+repo = 'junegunn/fzf.vim'
+
 [[plugins]] # coc.nvim
 repo = 'neoclide/coc.nvim'
 rev = 'release' 
@@ -327,3 +330,11 @@ hook_add = '''
 [[plugins]]
 repo = 'liuchengxu/vista.vim'
 depends = ['coc.nvim', 'lightline.vim']
+
+[[plugins]] # 移動高速化
+repo = 'justinmk/vim-sneak'
+hook_add = '''
+  let g:sneak#label = 1
+  map f <Plug>Sneak_s
+  map F <Plug>Sneak_S
+'''
