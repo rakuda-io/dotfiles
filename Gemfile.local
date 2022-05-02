@@ -3,4 +3,4 @@ eval_gemfile "Gemfile"
 gem 'pry-rails'
 gem 'pry-byebug'
 gem 'rails-erd'
-
+gem 'awesome_print'
