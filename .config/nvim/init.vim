@@ -45,7 +45,7 @@ nnoremap <silent> <C-b> <Left>
 nnoremap <silent> <C-a> <Home>
 nnoremap <silent> <C-e> <End>
 nnoremap <silent> <C-k> :EmacsKillCommand<CR>
-nnoremap <silent> <C-y> p
+" nnoremap <silent> <C-y> p
 inoremap <silent> <C-p> <Up>
 inoremap <silent> <C-n> <Down>
 inoremap <silent> <C-f> <Right>
@@ -55,7 +55,7 @@ inoremap <silent> <C-e> <End>
 inoremap <silent> <C-d> <Del>
 inoremap <silent> <C-h> <BS>
 inoremap <silent> <C-k> <ESC>:EmacsKillCommand<CR>a
-inoremap <silent> <C-y> <ESC>pA
+" inoremap <silent> <C-Y> <ESC>pA
 inoremap <silent> <C-j> <Down>
 vnoremap <silent> <C-a> <Home>
 vnoremap <silent> <C-e> <End>

@@ -34,75 +34,6 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 export FZF_DEFAULT_OPTS='--height 80% --reverse --inline-info --border --preview "bat  --color=always --style=header,grid --line-range :100 {}"'
 
 
-
-
-###### tmux ######
-
-# function is_exists() { type "$1" >/dev/null 2>&1; return $?; }
-# function is_osx() { [[ $OSTYPE == darwin* ]]; }
-# function is_screen_running() { [ ! -z "$STY" ]; }
-# function is_tmux_runnning() { [ ! -z "$TMUX" ]; }
-# function is_screen_or_tmux_running() { is_screen_running || is_tmux_runnning; }
-# function shell_has_started_interactively() { [ ! -z "$PS1" ]; }
-# function is_ssh_running() { [ ! -z "$SSH_CONECTION" ]; }
-
-# function tmux_automatically_attach_session()
-# {
-    # if is_screen_or_tmux_running; then
-        # ! is_exists 'tmux' && return 1
-
-        # # if is_tmux_runnning; then
-            # # echo "${fg_bold[red]} _____ __  __ _   ___  __ ${reset_color}"
-            # # echo "${fg_bold[red]}|_   _|  \/  | | | \ \/ / ${reset_color}"
-            # # echo "${fg_bold[red]}  | | | |\/| | | | |\  /  ${reset_color}"
-            # # echo "${fg_bold[red]}  | | | |  | | |_| |/  \  ${reset_color}"
-            # # echo "${fg_bold[red]}  |_| |_|  |_|\___//_/\_\ ${reset_color}"
-        # # elif is_screen_running; then
-            # # echo "This is on screen."
-        # # fi
-    # else
-        # if shell_has_started_interactively && ! is_ssh_running; then
-            # if ! is_exists 'tmux'; then
-                # echo 'Error: tmux command not found' 2>&1
-                # return 1
-            # fi
-
-            # if tmux has-session >/dev/null 2>&1 && tmux list-sessions | grep -qE '.*]$'; then
-                # # detached session exists
-                # tmux list-sessions
-                # echo -n "Tmux: attach? (y/N/num) "
-                # read
-                # if [[ "$REPLY" =~ ^[Yy]$ ]] || [[ "$REPLY" == '' ]]; then
-                    # tmux attach-session
-                    # if [ $? -eq 0 ]; then
-                        # echo "$(tmux -V) attached session"
-                        # return 0
-                    # fi
-                # elif [[ "$REPLY" =~ ^[0-9]+$ ]]; then
-                    # tmux attach -t "$REPLY"
-                    # if [ $? -eq 0 ]; then
-                        # echo "$(tmux -V) attached session"
-                        # return 0
-                    # fi
-                # fi
-            # fi
-
-            # if is_osx && is_exists 'reattach-to-user-namespace'; then
-                # # on OS X force tmux's default command
-                # # to spawn a shell in the user's namespace
-                # tmux_config=$(cat $HOME/.tmux.conf <(echo 'set-option -g default-command "reattach-to-user-namespace -l $SHELL"'))
-                # tmux -f <(echo "$tmux_config") new-session && echo "$(tmux -V) created new session supported OS X"
-            # else
-                # tmux new-session && echo "tmux created new session"
-            # fi
-        # fi
-    # fi
-# }
-# tmux_automatically_attach_session
-
-
-
-
 ###### path ######
 
 # rbenv_path
@@ -128,21 +59,39 @@ export PATH=$HOME/.nodebrew/current/bin:$PATH
 # fzf_path
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-
-
-
 ###### alias #######
 
 alias cdd='cd ~/dev'
-alias dc='docker-compose'
-alias dcu='docker-compose up -d'
-alias dcs='docker-compose stop'
 alias be='bundle exec'
+alias tailpuma='tail -f ~/Library/Logs/puma-dev.log' # puma-devログ
+alias tailrails='tail -f log/development.log' # Railsログ
+alias vi='nvim'
+alias v='nvim'
+alias vim='nvim'
+alias vif='nvim $(fzf)'
+alias ll='exa -laF'
+alias ls='ls -laF'
+alias lt='exa -T -L 3 -a -I "node_modules|.git|.githum|.docker|.circleci|coverage|lib|log|tmp|vendor|.cache" --icons'
+alias cat='bat' # シンタックス付きのリッチなcat
+alias grep='rg'
+alias find='fd' # 検索ワード + (任意)ディレクトリ
+alias ps='procs' # ps aux の代わり
+
+alias dc='docker-compose'
+alias dcu='docker-compose up'
+alias dcs='docker-compose stop'
+alias dcd='docker-compose down'
+alias dcb='docker-compose build'
+
 alias sref='exec $SHELL -l' # shell再起動
 alias zref='source ~/.zshrc' # zshrc再起動
 # alias tref='tmux source-file ~/.tmux.conf' # TMUX再起動
 alias pref='puma-dev -stop && puma-dev -install -d test' # puma-dev再起動
+
+alias ga='git add .'
+alias gca='git commit --amend'
 alias gs='git status'
+alias gl='git log --graph --oneline --decorate=full -20 --date=short --format="%C(yellow)%h%C(reset) %C(magenta)[%ad]%C(reset)%C(auto)%d%C(reset) %s %C(cyan)@%an%C(reset)"'
 alias gc='git checkout '
 alias gcb='git checkout -b'
 alias gf='git fetch --prune' # import remote branch latest
@@ -150,16 +99,10 @@ alias gst='git stash -u' # stash current branch's changes
 alias gsts='git stash save -u' # stash named save
 alias gstl='git stash list' # show stash list
 alias gstp='git stash pop ' # import stash changes & remove the stash
-alias tailpd='tail -f ~/Library/Logs/puma-dev.log' # puma-devログ
-alias tails='tail -f log/development.log' # Railsログ
-alias vi='nvim'
-alias v='nvim'
-alias vim='nvim'
-alias vif='nvim $(fzf)'
-alias ll='ls -laF'
-# alias t='tmux'
+
 alias gemfile_local='ln -s ~/dotfiles/Gemfile.local Gemfile.local && export BUNDLE_GEMFILE="Gemfile.local"' # 個人用のGemfileをリンク
 alias gemfile_local_no_use='unset BUNDLE_GEMFILE'
+
 alias vzsh='v ~/.zshrc'
 alias vinit='v ~/dotfiles/.config/nvim/init.vim'
 alias vdein='v ~/dotfiles/.config/nvim/plugins/config/dein.toml'

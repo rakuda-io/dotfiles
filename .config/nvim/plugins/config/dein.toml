@@ -346,3 +346,6 @@ repo = 'thinca/vim-qfreplace'
 
 [[plugins]] # color code preview
 repo = 'gko/vim-coloresque'
+
+[[plugins]] # HTML補完
+repo = 'mattn/emmet-vim'
