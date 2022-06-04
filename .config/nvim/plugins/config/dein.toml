@@ -259,12 +259,8 @@ repo = 'tpope/vim-endwise'
 [[plugins]] # 閉じカッコを自動挿入
 repo = 'jiangmiao/auto-pairs'
 
-[[plugins]] # コメントアウト
-repo = 'scrooloose/nerdcommenter'
-hook_add = '''
-  let g:NERDCreateDefaultMappings = 0
-  let NERDSpaceDelims = 1
-'''
+[[plugins]] 
+repo = 'tpope/vim-commentary' # コメント化
 
 [[plugins]] # vim内でのicon表示
 repo = 'ryanoasis/vim-devicons'
@@ -273,6 +269,9 @@ repo = 'ryanoasis/vim-devicons'
 repo = 'junegunn/fzf'
 build = './install --all'
 merged = '0'
+
+[[plugins]]
+repo = 'junegunn/fzf.vim'
 
 [[plugins]] # coc.nvim
 repo = 'neoclide/coc.nvim'
@@ -305,15 +304,15 @@ hook_add = '''
   nmap U :UndotreeToggle<CR>
 '''
 
-[[plugins]] # ctags自動更新
-repo = 'szw/vim-tags'
-hook_add = '''
-  let g:vim_tags_project_tags_command = "/usr/local/bin/ctags -f .tags -R . 2>/dev/null"
-  let g:vim_tags_gems_tags_command = "/usr/local/bin/ctags -R -f .Gemfile.lock.tags `bundle show --paths` 2>/dev/null"
-  set tags+=.tags
-  set tags+=.Gemfile.lock.tags
-  nnoremap <C-]> g<C-]>
-'''
+# [[plugins]] # ctags自動更新
+# repo = 'szw/vim-tags'
+# hook_add = '''
+#   let g:vim_tags_project_tags_command = "/usr/local/bin/ctags -f .tags -R . 2>/dev/null"
+#   let g:vim_tags_gems_tags_command = "/usr/local/bin/ctags -R -f .Gemfile.lock.tags `bundle show --paths` 2>/dev/null"
+#   set tags+=.tags
+#   set tags+=.Gemfile.lock.tags
+#   nnoremap <C-]> g<C-]>
+# '''
 
 [[plugins]] # railsの支援
 repo = 'tpope/vim-rails'
@@ -327,3 +326,26 @@ hook_add = '''
 [[plugins]]
 repo = 'liuchengxu/vista.vim'
 depends = ['coc.nvim', 'lightline.vim']
+
+# [[plugins]] # 移動高速化
+# repo = 'justinmk/vim-sneak'
+# hook_add = '''
+  # let g:sneak#label = 1
+  # map f <Plug>Sneak_s
+  # map F <Plug>Sneak_S
+# '''
+
+# [[plugins]] # 移動高速化
+# repo = 'easymotion/vim-easymotion'
+# hook_add = ```
+  
+# ```
+
+[[plugins]] # 置換
+repo = 'thinca/vim-qfreplace'
+
+[[plugins]] # color code preview
+repo = 'gko/vim-coloresque'
+
+[[plugins]] # HTML補完
+repo = 'mattn/emmet-vim'
