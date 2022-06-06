@@ -179,6 +179,7 @@ set wildmenu " コマンドラインモードでTABキーによるファイル�
 set wildmode=full " TABキーによるファイル名補完リストをFullで出力
 set history=10000 " 履歴を保存する件数
 set showtabline=2 " 常にタブラインを表示
+set diffopt+=vertical " :diffsplitを常に左右分割にする
 
 
 

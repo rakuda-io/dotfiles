@@ -114,7 +114,8 @@ alias dcb='docker-compose build'
 
 # 再起動系
 alias sref='exec $SHELL -l' # shell再起動
-alias zref='source ~/.zshrc' # zshrc再起動
+alias zref='source ~/.zshrc' # zshrc再読み込み
+alias iref='source ~/.config/nvim/init.vim' # init.vim再読み込み
 # alias tref='tmux source-file ~/.tmux.conf' # TMUX再起動
 alias pref='puma-dev -stop && puma-dev -install -d test' # puma-dev再起動
 
@@ -123,19 +124,22 @@ alias gca='git commit --amend'
 alias gs='git status'
 alias gl='git log --graph --oneline --decorate=full -20 --date=short --format="%C(yellow)%h%C(reset) %C(magenta)[%ad]%C(reset)%C(auto)%d%C(reset) %s %C(cyan)@%an%C(reset)"'
 alias gc='git checkout'
-alias gcc='git checkout $(git branch -a | tr -d " " |fzf --height 100% --prompt "CHECKOUT BRANCH>" --preview "git log --color=always {}" | head -n 1 | sed -e "s/^\*\s*//g" | perl -pe "s/remotes\/origin\///g")'
+alias gcc='git checkout $(git branch | tr -d " " |fzf --height 100% --prompt "CHECKOUT BRANCH>" --preview "git log --color=always {}" | head -n 1 | sed -e "s/^\*\s*//g" | perl -pe "s/remotes\/origin\///g")'
+alias gccr='git checkout $(git branch -a | tr -d " " |fzf --height 100% --prompt "CHECKOUT BRANCH>" --preview "git log --color=always {}" | head -n 1 | sed -e "s/^\*\s*//g" | perl -pe "s/remotes\/origin\///g")'
 alias gcb='git checkout -b'
 alias gf='git fetch --prune' # import remote branch latest
 # stash
 alias gst='git stash -u' # stash current branch's changes
 alias gsts='git stash save -u' # stash named save
 alias gstl='git stash list' # show stash list
-alias gstp='git stash pop $(git stash list)' # import stash changes & remove the stash
+alias gstp='git stash pop' # import stash changes & remove the stash
 # worktree
-alias gwa='git worktree add $(git branch -a | tr -d " " |fzf --height 100% --prompt "CHECKOUT BRANCH>" --preview "git log --color=always {}" | head -n 1 | sed -e "s/^\*\s*//g" | perl -pe "s/remotes\/origin\///g")'
+# alias gwa='git worktree add $(git branch -a | tr -d " " |fzf --height 100% --prompt "CHECKOUT BRANCH>" --preview "git log --color=always {}" | head -n 1 | sed -e "s/^\*\s*//g" | perl -pe "s/remotes\/origin\///g")'
+alias gwa='git worktree add'
 alias gwl='git worktree list' # git worktree一覧
-alias gwp='git worktree prune'
 alias gcw='cdworktree' # git worktreeで作ったdirにcheck out
+alias gwrm='git worktree remove' # 後ろにdir指定で指定worktree削除
+alias gwp='git worktree prune'
 
 # その他
 alias gemfile_local='ln -s ~/dotfiles/Gemfile.local Gemfile.local && export BUNDLE_GEMFILE="Gemfile.local"' # 個人用のGemfileをリンク
