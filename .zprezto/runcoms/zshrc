@@ -77,6 +77,9 @@ export PATH=$HOME/.nodebrew/current/bin:$PATH
 # fzf_path
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Rust_path
+export PATH="$HOME/.cargo/bin:$PATH"
+
 
 ###### alias #######
 
@@ -131,7 +134,7 @@ alias gf='git fetch --prune' # import remote branch latest
 # stash
 alias gst='git stash -u' # stash current branch's changes
 alias gsts='git stash save -u' # stash named save
-alias gstl='git stash list' # show stash list
+alias gstl='tig stash' # show stash list
 alias gstp='git stash pop' # import stash changes & remove the stash
 # worktree
 # alias gwa='git worktree add $(git branch -a | tr -d " " |fzf --height 100% --prompt "CHECKOUT BRANCH>" --preview "git log --color=always {}" | head -n 1 | sed -e "s/^\*\s*//g" | perl -pe "s/remotes\/origin\///g")'
@@ -145,4 +148,5 @@ alias gwp='git worktree prune'
 alias gemfile_local='ln -s ~/dotfiles/Gemfile.local Gemfile.local && export BUNDLE_GEMFILE="Gemfile.local"' # 個人用のGemfileをリンク
 alias gemfile_local_no_use='unset BUNDLE_GEMFILE'
 alias ctags="`brew --prefix`/bin/ctags"
+alias ojt='oj t -c " ruby main.rb" -d test' # AtCoderのonline-judge-toolsのテスト実行
 

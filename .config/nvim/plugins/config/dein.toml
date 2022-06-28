@@ -256,8 +256,11 @@ hook_add = '''
 [[plugins]] # endを自動入力
 repo = 'tpope/vim-endwise'
 
-[[plugins]] # 閉じカッコを自動挿入
-repo = 'jiangmiao/auto-pairs'
+# [[plugins]] # 閉じカッコを自動挿入
+# repo = 'jiangmiao/auto-pairs'
+
+[[plugins]] # 文字入力自動展開(カッコetc...)
+repo = 'cohama/lexima.vim'
 
 [[plugins]] 
 repo = 'tpope/vim-commentary' # コメント化
@@ -270,7 +273,7 @@ repo = 'junegunn/fzf'
 build = './install --all'
 merged = '0'
 
-[[plugins]]
+[[plugins]] # vim用fzf
 repo = 'junegunn/fzf.vim'
 
 [[plugins]] # coc.nvim
@@ -281,21 +284,26 @@ merged = '0'
 [[plugins]] # ale
 repo = 'w0rp/ale'
 hook_add = '''
+  nmap <silent> <C-w>j <Plug>(ale_next_wrap)
+  nmap <silent> <C-w>k <Plug>(ale_previous_wrap)
   highlight clear ALEError
-    highlight clear ALEWarning
-    let g:ale_lint_on_enter = 0
-    let g:ale_sign_column_always = 1
-    let g:ale_set_loclist = 0
-    let g:ale_set_quickfix = 1
-    if has('mac')
-        let s:header_path = '-I/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include'
-        let g:ale_cpp_clang_options = '-std=c++14 -Wall ' . s:header_path
-        let g:ale_cpp_gcc_options = '-std=c++14 -Wall ' . s:header_path
-    endif
-    let g:ale_linters = {
-                \ 'c': ['clangd'],
-                \ 'cpp' : ['clangd']
-    \ }
+  highlight clear ALEWarning
+  let g:ale_lint_on_enter = 0
+  let g:ale_sign_column_always = 1
+  let g:ale_set_loclist = 0
+  let g:ale_set_quickfix = 1
+  let g:ale_sign_warning = ''
+  if has('mac')
+      let s:header_path = '-I/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include'
+      let g:ale_cpp_clang_options = '-std=c++14 -Wall ' . s:header_path
+      let g:ale_cpp_gcc_options = '-std=c++14 -Wall ' . s:header_path
+  endif
+  let g:ale_linters = {
+              \ 'ruby': ['rubocop', 'reek'],
+              \ 'json': ['jsonlint'],
+              \ 'Dockerfile': ['dockerfile_lint', 'hadolint'],
+              \ 'scss': ['stylelint']
+  \ }
 '''
 
 [[plugins]] # undo履歴
@@ -349,3 +357,12 @@ repo = 'gko/vim-coloresque'
 
 [[plugins]] # HTML補完
 repo = 'mattn/emmet-vim'
+
+[[plugins]] # テキストを囲う補助
+repo = 'machakann/vim-sandwich'
+
+[[plugins]] # 独自スニペット定義
+repo = 'SirVer/ultisnips'
+
+[[plugins]] # スニペット集
+repo = 'honza/vim-snippets'
