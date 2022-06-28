@@ -1,0 +1,21 @@
+snippet pagebo "[Snippet] page.body TEST"
+expect(page.body).to eq '******TEST******'
+endsnippet
+
+snippet conspe "[Snippet] Context nested Specify"
+context '$1' do
+	specify '$2' do
+		$3
+	end
+end
+endsnippet
+
+snippet concon "[Snippet] Context nested Context"
+context '$1' do
+	context '$2' do
+		$3
+	end
+end
+endsnippet
+
+

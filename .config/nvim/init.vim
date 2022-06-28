@@ -39,6 +39,73 @@ nmap <leader>y :let @* = expand('%')<CR>
 " init.vimの設定ファイルを再読み込み
 nmap <leader>r :source ~/.config/nvim/init.vim<CR>
 
+" coc.nvimの補完候補をTABで選択可能に
+inoremap <silent><expr> <Tab>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" スニペット操作(coc)
+imap <C-l> <Plug>(coc-snippets-expand)
+let g:UltiSnipsExpandTrigger="<Nop>"
+vmap <Tab> <Plug>(coc-snippets-select)
+let g:coc_snippet_next = '<Tab>'
+let g:coc_snippet_prev = '<S-Tab>'
+
+" 定義元ジャンプ
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" " snippets設定
+" let g:UltiSnipsSnippetDirectories=['~/.config/nvim/UltiSnips']
+" let g:UltiSnipsExpandTrigger="<C-;>"
+" let g:UltiSnipsJumpForwardTrigger="<c-n>"
+" let g:UltiSnipsJumpBackwardTrigger="<c-p>"
+
+" coc extensionsのグローバル設定
+let g:coc_global_extensions = [
+      \'coc-diagnostic', 
+      \'coc-dictionary', 
+      \'coc-docker', 
+      \'coc-emmet', 
+      \'coc-explorer',
+      \'coc-git', 
+      \'coc-highlight',
+      \'coc-html',
+      \'coc-java', 
+      \'coc-json', 
+      \'coc-lists', 
+      \'coc-markdownlint', 
+      \'coc-metals', 
+      \'coc-pairs', 
+      \'coc-snippets', 
+      \'coc-tsserver', 
+      \'coc-vetur',
+      \'coc-yaml'
+\]
+
+" ALE設定
+let g:ale_disable_lsp = 1
+let g:ale_lint_on_text_changed = 1
+
 " Emacsキーバインド
 nnoremap <silent> <C-f> <Right>
 nnoremap <silent> <C-b> <Left>
@@ -169,7 +236,7 @@ set softtabstop=2 " 連続した空白に対してタブキーやバックスペ
 set expandtab     " タブ入力を複数の空白入力に置き換える
 set autoindent    " 改行時に前の行のインデントを継続する
 set smartindent   " 改行時に入力された行の末尾に合わせて次の行のインデントを増減する
-set smartindent "C系の文法に従って自動インデント、{}とかに反応する
+" set smartindent "C系の文法に従って自動インデント、{}とかに反応する
 set shiftwidth=2  " 自動インデントでずれる幅
 set backspace=indent,eol,start " Backspaceキーの影響範囲に制限を設けない
 set whichwrap=b,s,h,l,<,>,[,]  " 行頭行末の左右移動で行をまたぐ
@@ -179,6 +246,7 @@ set wildmenu " コマンドラインモードでTABキーによるファイル�
 set wildmode=full " TABキーによるファイル名補完リストをFullで出力
 set history=10000 " 履歴を保存する件数
 set showtabline=2 " 常にタブラインを表示
+set diffopt+=vertical " :diffsplitを常に左右分割にする
 
 
 
@@ -266,8 +334,8 @@ let $FZF_PREVIEW_PREVIEW_BAT_THEME  = 'gruvbox-dark'
 
 nnoremap <silent> <fzf-p>p     :<C-u>CocCommand fzf-preview.ProjectFiles<CR>
 " nnoremap <silent> <fzf-p>r     :<C-u>CocCommand fzf-preview.FromResources buffer project_mru<CR>
-nnoremap <silent> <fzf-p>r     :<C-u>CocCommand fzf-preview.MruFiles<CR>
-nnoremap <silent> <fzf-p>R     :<C-u>CocCommand fzf-preview.ProjectMrwFiles<CR>
+nnoremap <silent> <fzf-p>r     :<C-u>CocCommand fzf-preview.ProjectMrwFiles<CR>
+nnoremap <silent> <fzf-p>R     :<C-u>CocCommand fzf-preview.MruFiles<CR>
 nnoremap <silent> <fzf-p>a     :<C-u>CocCommand fzf-preview.FromResources project_mru git<CR>
 nnoremap <silent> <fzf-p>g     :<C-u>CocCommand fzf-preview.GitActions<CR>
 nnoremap <silent> <fzf-p>s     :<C-u>CocCommand fzf-preview.GitStatus<CR>
@@ -287,10 +355,10 @@ nnoremap <silent> <fzf-p>m     :<C-u>CocCommand fzf-preview.Bookmarks --resume<C
 nnoremap <silent> <fzf-p><C-]> :<C-u>CocCommand fzf-preview.VistaCtags --add-fzf-arg=--query="<C-r>=expand('<cword>')<CR>"<CR>
 nnoremap <silent> <fzf-p>o     :<C-u>CocCommand fzf-preview.VistaBufferCtags<CR>
 
-"nnoremap <silent> <dev>q  :<C-u>CocCommand fzf-preview.CocCurrentDiagnostics<CR>
-"nnoremap <silent> <dev>Q  :<C-u>CocCommand fzf-preview.CocDiagnostics<CR>
-"nnoremap <silent> <dev>rf :<C-u>CocCommand fzf-preview.CocReferences<CR>
-"nnoremap <silent> <dev>t  :<C-u>CocCommand fzf-preview.CocTypeDefinitions<CR>
+" nnoremap <silent> <fzf-p>d  :<C-u>CocCommand fzf-preview.CocCurrentDiagnostics<CR>
+" nnoremap <silent> <fzf-p>D  :<C-u>CocCommand fzf-preview.CocDiagnostics<CR>
+" nnoremap <silent> <fzf-p>R :<C-u>CocCommand fzf-preview.CocReferences<CR>
+" nnoremap <silent> <fzf-p>T  :<C-u>CocCommand fzf-preview.CocTypeDefinitions<CR>
 
 function! s:buffers_delete_from_lines(lines) abort
   for line in a:lines

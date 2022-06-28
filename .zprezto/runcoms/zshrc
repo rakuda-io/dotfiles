@@ -33,6 +33,24 @@ export FZF_CTRL_T_OPTS='--preview "bat  --color=always --style=header,grid --lin
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 export FZF_DEFAULT_OPTS='--height 80% --reverse --inline-info --border --preview "bat  --color=always --style=header,grid --line-range :100 {}"'
 
+# worktree移動
+function cdworktree() {
+    # カレントディレクトリがGitリポジトリ上かどうか
+    git rev-parse &>/dev/null
+    if [ $? -ne 0 ]; then
+        echo fatal: Not a git repository.
+        return
+    fi
+
+    local selectedWorkTreeDir=`git worktree list | fzf | awk '{print $1}'`
+
+    if [ "$selectedWorkTreeDir" = "" ]; then
+        # Ctrl-C.
+        return
+    fi
+
+    cd ${selectedWorkTreeDir}
+}
 
 ###### path ######
 
@@ -59,53 +77,76 @@ export PATH=$HOME/.nodebrew/current/bin:$PATH
 # fzf_path
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Rust_path
+export PATH="$HOME/.cargo/bin:$PATH"
+
+
 ###### alias #######
 
-alias cdd='cd ~/dev'
-alias be='bundle exec'
-alias tailpuma='tail -f ~/Library/Logs/puma-dev.log' # puma-devログ
-alias tailrails='tail -f log/development.log' # Railsログ
-alias vi='nvim'
-alias v='nvim'
-alias vim='nvim'
-alias vif='nvim $(fzf)'
-alias ll='exa -laF'
-alias ls='ls -laF'
+# Linuxコマンド系
+alias cdd='cd ~/' # Homeディレクトリへ(enhancdを使ってるので…)
+alias ll='exa -laF' # リッチなls
+alias ls='ls -laF' # 通常のls
 alias lt='exa -T -L 3 -a -I "node_modules|.git|.githum|.docker|.circleci|coverage|lib|log|tmp|vendor|.cache" --icons'
 alias cat='bat' # シンタックス付きのリッチなcat
 alias grep='rg'
-alias find='fd' # 検索ワード + (任意)ディレクトリ
+alias find='fd -i' # 検索ワード + (任意)ディレクトリ ※ 小文字大文字無視
 alias ps='procs' # ps aux の代わり
 
+# Vim系
+alias vi='nvim'
+alias v='nvim'
+alias vim='nvim'
+alias vif='nvim $(fzf)' # fzfで絞り込んでvimで開く
+alias vzsh='v ~/.zshrc'
+alias vinit='v ~/dotfiles/.config/nvim/init.vim'
+alias vdein='v ~/dotfiles/.config/nvim/plugins/config/dein.toml'
+alias vtmux='v ~/.tmux.conf'
+
+# Railsコマンド系
+alias be='bundle exec'
+alias tailpuma='tail -f ~/Library/Logs/puma-dev.log' # puma-devログ
+alias tailrails='tail -f log/development.log' # Railsログ
+
+# Dockerコマンド系
 alias dc='docker-compose'
 alias dcu='docker-compose up'
 alias dcs='docker-compose stop'
 alias dcd='docker-compose down'
 alias dcb='docker-compose build'
 
+# 再起動系
 alias sref='exec $SHELL -l' # shell再起動
-alias zref='source ~/.zshrc' # zshrc再起動
+alias zref='source ~/.zshrc' # zshrc再読み込み
+alias iref='source ~/.config/nvim/init.vim' # init.vim再読み込み
 # alias tref='tmux source-file ~/.tmux.conf' # TMUX再起動
 alias pref='puma-dev -stop && puma-dev -install -d test' # puma-dev再起動
 
-alias ga='git add .'
+# gitコマンド
 alias gca='git commit --amend'
 alias gs='git status'
 alias gl='git log --graph --oneline --decorate=full -20 --date=short --format="%C(yellow)%h%C(reset) %C(magenta)[%ad]%C(reset)%C(auto)%d%C(reset) %s %C(cyan)@%an%C(reset)"'
-alias gc='git checkout '
+alias gc='git checkout'
+alias gcc='git checkout $(git branch | tr -d " " |fzf --height 100% --prompt "CHECKOUT BRANCH>" --preview "git log --color=always {}" | head -n 1 | sed -e "s/^\*\s*//g" | perl -pe "s/remotes\/origin\///g")'
+alias gccr='git checkout $(git branch -a | tr -d " " |fzf --height 100% --prompt "CHECKOUT BRANCH>" --preview "git log --color=always {}" | head -n 1 | sed -e "s/^\*\s*//g" | perl -pe "s/remotes\/origin\///g")'
 alias gcb='git checkout -b'
 alias gf='git fetch --prune' # import remote branch latest
+# stash
 alias gst='git stash -u' # stash current branch's changes
 alias gsts='git stash save -u' # stash named save
-alias gstl='git stash list' # show stash list
-alias gstp='git stash pop ' # import stash changes & remove the stash
+alias gstl='tig stash' # show stash list
+alias gstp='git stash pop' # import stash changes & remove the stash
+# worktree
+# alias gwa='git worktree add $(git branch -a | tr -d " " |fzf --height 100% --prompt "CHECKOUT BRANCH>" --preview "git log --color=always {}" | head -n 1 | sed -e "s/^\*\s*//g" | perl -pe "s/remotes\/origin\///g")'
+alias gwa='git worktree add'
+alias gwl='git worktree list' # git worktree一覧
+alias gcw='cdworktree' # git worktreeで作ったdirにcheck out
+alias gwrm='git worktree remove' # 後ろにdir指定で指定worktree削除
+alias gwp='git worktree prune'
 
+# その他
 alias gemfile_local='ln -s ~/dotfiles/Gemfile.local Gemfile.local && export BUNDLE_GEMFILE="Gemfile.local"' # 個人用のGemfileをリンク
 alias gemfile_local_no_use='unset BUNDLE_GEMFILE'
-
-alias vzsh='v ~/.zshrc'
-alias vinit='v ~/dotfiles/.config/nvim/init.vim'
-alias vdein='v ~/dotfiles/.config/nvim/plugins/config/dein.toml'
-alias vtmux='v ~/.tmux.conf'
 alias ctags="`brew --prefix`/bin/ctags"
+alias ojt='oj t -c " ruby main.rb" -d test' # AtCoderのonline-judge-toolsのテスト実行
 
