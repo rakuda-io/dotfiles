@@ -1,0 +1,59 @@
+"================================================================
+" nvim ~/.config/nvim/init.vim
+" Rubymine ~/.ideavimrc
+"================================================================
+
+" jjでInsertモードを抜けて保存
+inoremap <silent> jj <ESC>:w<CR>
+
+" vv でカーソル位置から行末まで選択(改行含めない)
+vnoremap v ^$h
+
+" vV で行頭から行末まで選択(改行含めない)
+vnoremap V <Esc>^v$h
+
+" Visual Lineモードにスペース2回で移行する
+nmap <Leader><Leader> V
+
+" 画面分割
+nnoremap sv :<C-u>vs<CR><C-w>l
+nnoremap ss :<C-u>sp<CR><C-w>j
+
+" 分割ウインドウ移動
+nnoremap <C-w>j <C-w><C-j>
+nnoremap <C-w>k <C-w><C-k>
+
+" 行の移動を方式を変更
+nnoremap j gj
+nnoremap k gk
+vnoremap j gj
+vnoremap k gk
+
+" x キー削除でデフォルトレジスタに入れない
+nnoremap x "_x
+vnoremap x "_x
+
+" sを使用しない
+nnoremap s <Nop>
+vnoremap s <Nop>
+
+" Emacs風キーバインド
+nnoremap <silent> <C-a> <Home>
+nnoremap <silent> <C-e> <End>
+inoremap <silent> <C-p> <Up>
+inoremap <silent> <C-n> <Down>
+inoremap <silent> <C-f> <Right>
+inoremap <silent> <C-b> <Left>
+inoremap <silent> <C-a> <Home>
+inoremap <silent> <C-e> <End>
+inoremap <silent> <C-d> <Del>
+inoremap <silent> <C-h> <BS>
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
+cnoremap <C-f> <Right>
+cnoremap <C-b> <Left>
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+cnoremap <C-d> <Del>
+cnoremap <C-y> <C-r>*
+

@@ -2,6 +2,16 @@ snippet pagebo "[Snippet] page.body TEST"
 expect(page.body).to eq '******TEST******'
 endsnippet
 
+snippet ld "Rails.logger.debug"
+logger.debug($1)
+endsnippet
+
+snippet ldd "Rails.logger.debug TEST"
+logger.debug("***************************************************")
+logger.debug($1)
+logger.debug("***************************************************")
+endsnippet
+
 snippet conspe "[Snippet] Context nested Specify"
 context '$1' do
 	specify '$2' do
@@ -17,5 +27,4 @@ context '$1' do
 	end
 end
 endsnippet
-
 

@@ -1,3 +1,5 @@
+# Fig pre block. Keep at the top of this file.
+[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
@@ -26,6 +28,31 @@ fancy-ctrl-z () {
 }
 zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
+
+# コマンド履歴除外リスト
+HISTIGNORE='?:??:???:exit:history'
+
+# Github CLI
+# リポジトリを検索して選択したPRをWebで開く
+ghgrep () {
+    gh search prs --repo favy-jp/favy --limit 100;
+    echo "Type PR number to view web: " && read number;
+    gh pr view --web ${number};
+}
+
+# ghq+fzfでリポジトリ検索&移動
+function ghq-fzf() {
+  # local src=$(ghq list | fzf --preview "ls -laTp $(ghq root)/{} | tail -n+4 | awk '{print \$9\"/\"\$6\"/\"\$7 \" \" \$10}'")
+  local src=$(ghq list | fzf --preview "git --git-dir $(ghq root)/{}/.git log --date=short --pretty=format:'-%C(yellow)%d%Creset %s %Cgreen(%cd) %C(bold blue)<%an>%Creset' --color")
+  if [ -n "$src" ]; then
+    BUFFER="cd $(ghq root)/$src"
+    zle accept-line
+  fi
+  zle -R -c
+}
+zle -N ghq-fzf
+bindkey '^]' ghq-fzf
+
 
 # fzf settings
 export FZF_CTRL_T_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
@@ -66,7 +93,9 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
 # openssl_path
-export PATH="/usr/local/opt/openssl@3/bin:$PATH"
+# 3系だと開発環境でのAppleログインが死ぬので超レガシーな1系に固定(2023/02/22 favy開発定例にて)
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+# 旧: export PATH="/usr/local/opt/openssl@3/bin:$PATH"
 
 # mysql_path
 export PATH="/usr/local/opt/mysql/bin:$PATH"
@@ -80,16 +109,18 @@ export PATH=$HOME/.nodebrew/current/bin:$PATH
 # Rust_path
 export PATH="$HOME/.cargo/bin:$PATH"
 
+export W3MIMGDISPLAY_PATH=/usr/lib/w3m/w3mimgdisplay
+
 
 ###### alias #######
 
 # Linuxコマンド系
 alias cdd='cd ~/' # Homeディレクトリへ(enhancdを使ってるので…)
-alias ll='exa -laF' # リッチなls
-alias ls='ls -laF' # 通常のls
+alias ls='exa --icons' # リッチなls
+alias ll='exa -laF' # 通常のls
 alias lt='exa -T -L 3 -a -I "node_modules|.git|.githum|.docker|.circleci|coverage|lib|log|tmp|vendor|.cache" --icons'
 alias cat='bat' # シンタックス付きのリッチなcat
-alias grep='rg'
+# alias grep='rg'
 alias find='fd -i' # 検索ワード + (任意)ディレクトリ ※ 小文字大文字無視
 alias ps='procs' # ps aux の代わり
 
@@ -98,10 +129,9 @@ alias vi='nvim'
 alias v='nvim'
 alias vim='nvim'
 alias vif='nvim $(fzf)' # fzfで絞り込んでvimで開く
-alias vzsh='v ~/.zshrc'
-alias vinit='v ~/dotfiles/.config/nvim/init.vim'
+alias vzsh='nvim ~/.zshrc'
+alias vinit='nvim -c :w ~/dotfiles/.config/nvim/init.vim'
 alias vdein='v ~/dotfiles/.config/nvim/plugins/config/dein.toml'
-alias vtmux='v ~/.tmux.conf'
 
 # Railsコマンド系
 alias be='bundle exec'
@@ -119,8 +149,9 @@ alias dcb='docker-compose build'
 alias sref='exec $SHELL -l' # shell再起動
 alias zref='source ~/.zshrc' # zshrc再読み込み
 alias iref='source ~/.config/nvim/init.vim' # init.vim再読み込み
-# alias tref='tmux source-file ~/.tmux.conf' # TMUX再起動
-alias pref='puma-dev -stop && puma-dev -install -d test' # puma-dev再起動
+# alias tref='tmux source-file ~/.tmux.conf' # TMUX再起動 -> prefix + I でもOKなので一旦コメントアウト
+alias pref='puma-dev -stop' # puma-dev再起動
+# alias pref='puma-dev -stop && puma-dev -install -d test' # puma-dev再起動
 
 # gitコマンド
 alias gca='git commit --amend'
@@ -149,4 +180,7 @@ alias gemfile_local='ln -s ~/dotfiles/Gemfile.local Gemfile.local && export BUND
 alias gemfile_local_no_use='unset BUNDLE_GEMFILE'
 alias ctags="`brew --prefix`/bin/ctags"
 alias ojt='oj t -c " ruby main.rb" -d test' # AtCoderのonline-judge-toolsのテスト実行
+alias jobcan='ruby ~/Dev/selenium/jobcan-selenium.rb'
 
+# Fig post block. Keep at the bottom of this file.
+[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"

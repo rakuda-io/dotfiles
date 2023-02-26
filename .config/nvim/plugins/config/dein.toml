@@ -1,149 +1,11 @@
 [[plugins]] # plugin manager
 repo = 'Shougo/dein.vim'
 
-[[plugins]]
-repo = 'Lokaltog/vim-powerline'
-
 [[plugins]] # lightlineにALE情報を載せる
 repo = 'maximbaz/lightline-ale'
 
 [[plugins]] # ステータスラインカスタム
 repo = 'itchyny/lightline.vim'
-hook_add = '''
-  let g:lightline_hybrid_style = 'plain'
-  set laststatus=2
-  set noshowmode
-  let g:lightline = {
-        \ 'mode_map': {'c': 'NORMAL'},
-        \ 'component_expand': {'linter_errors': 'lightline#ale#errors'},
-        \ 'component_type': {'linter_errors': 'error'},
-        \ 'active': {
-        \   'left': [
-        \     ['mode', 'paste'],
-        \     ['fugitive', 'gitgutter', 'filename'],
-        \   ],
-        \   'right': [
-        \     ['lineinfo', 'syntastic'],
-        \     ['percent'],
-        \     ['filetype', 'linter_errors'],
-        \   ]
-        \ },
-        \ 'component_function': {
-        \   'modified': 'MyModified',
-        \   'readonly': 'MyReadonly',
-        \   'fugitive': 'MyFugitive',
-        \   'filename': 'MyFilename',
-        \   'fileformat': 'MyFileformat',
-        \   'filetype': 'MyFiletype',
-        \   'fileencoding': 'MyFileencoding',
-        \   'mode': 'MyMode',
-        \   'syntastic': 'SyntasticStatuslineFlag',
-        \   'charcode': 'MyCharCode',
-        \   'gitgutter': 'MyGitGutter',
-        \ },
-        \ }
-
-function! MyModified()
-  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
-endfunction
-
-function! MyReadonly()
-  return &ft !~? 'help\|vimfiler\|gundo' && &ro ? '⭤' : ''
-endfunction
-
-function! MyFilename()
-  return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
-        \  &ft == 'unite' ? unite#get_status_string() :
-        \  &ft == 'vimshell' ? substitute(b:vimshell.current_dir,expand('~'),'~','') :
-        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
-        \ ('' != MyModified() ? ' ' . MyModified() : '')
-endfunction
-
-function! MyFugitive()
-  try
-    if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
-      let _ = fugitive#head()
-      return strlen(_) ? '⭠ '._ : ''
-    endif
-  catch
-  endtry
-  return ''
-endfunction
-
-function! MyFileformat()
-  return winwidth('.') > 70 ? &fileformat : ''
-endfunction
-
-function! MyFiletype()
-  return winwidth('.') > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
-endfunction
-
-function! MyFileencoding()
-  return winwidth('.') > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
-endfunction
-
-function! MyMode()
-  return winwidth('.') > 60 ? lightline#mode() : ''
-endfunction
-
-function! MyGitGutter()
-  if ! exists('*GitGutterGetHunkSummary')
-        \ || ! get(g:, 'gitgutter_enabled', 0)
-        \ || winwidth('.') <= 90
-    return ''
-  endif
-  let symbols = [
-        \ g:gitgutter_sign_added . ' ',
-        \ g:gitgutter_sign_modified . ' ',
-        \ g:gitgutter_sign_removed . ' '
-        \ ]
-  let hunks = GitGutterGetHunkSummary()
-  let ret = []
-  for i in [0, 1, 2]
-    if hunks[i] > 0
-      call add(ret, symbols[i] . hunks[i])
-    endif
-  endfor
-  return join(ret, ' ')
-endfunction
-
-" https://github.com/Lokaltog/vim-powerline/blob/develop/autoload/Powerline/Functions.vim
-function! MyCharCode()
-  if winwidth('.') <= 70
-    return ''
-  endif
-
-  " Get the output of :ascii
-  redir => ascii
-  silent! ascii
-  redir END
-
-  if match(ascii, 'NUL') != -1
-    return 'NUL'
-  endif
-
-  " Zero pad hex values
-  let nrformat = '0x%02x'
-
-  let encoding = (&fenc == '' ? &enc : &fenc)
-
-  if encoding == 'utf-8'
-    " Zero pad with 4 zeroes in unicode files
-    let nrformat = '0x%04x'
-  endif
-
-  " Get the character and the numeric value from the return value of :ascii
-  " This matches the two first pieces of the return value, e.g.
-  " "<F>  70" => char: 'F', nr: '70'
-  let [str, char, nr; rest] = matchlist(ascii, '\v\<(.{-1,})\>\s*([0-9]+)')
-
-  " Format the numeric value
-  let nr = printf(nrformat, nr)
-
-  return "'". char ."' ". nr
-endfunction
-'''
 
 [[plugins]] # インデントの視認性向上
 repo = 'Yggdroot/indentLine'
@@ -178,23 +40,23 @@ hook_add = '''
   highlight GitGutterChangeDelete ctermfg=yellow
 '''
 
-[[plugins]] # カレントディレクトリをプロジェクトルートに
-repo = 'mattn/vim-findroot'
-hook_add = '''
-  let g:findroot_patterns = [
-    \  '.git/',
-    \  '.svn/',
-    \  '.hg/',
-    \  '.bzr/',
-    \  '.gitignore',
-    \  'Rakefile',
-    \  'pom.xml',
-    \  'project.clj',
-    \  '*.csproj',
-    \  '*.sln',
-    \]
-  let g:findroot_not_for_subdir = 0
-'''
+#[[plugins]] # カレントディレクトリをプロジェクトルートに
+#repo = 'mattn/vim-findroot'
+#hook_add = '''
+#  let g:findroot_patterns = [
+#    \  '.git/',
+#    \  '.svn/',
+#    \  '.hg/',
+#    \  '.bzr/',
+#    \  '.gitignore',
+#    \  'Rakefile',
+#    \  'pom.xml',
+#    \  'project.clj',
+#    \  '*.csproj',
+#    \  '*.sln',
+#    \]
+#  let g:findroot_not_for_subdir = 0
+#'''
 
 [[plugins]] # FILE tree
 repo = 'lambdalisue/fern.vim'
@@ -256,13 +118,10 @@ hook_add = '''
 [[plugins]] # endを自動入力
 repo = 'tpope/vim-endwise'
 
-# [[plugins]] # 閉じカッコを自動挿入
-# repo = 'jiangmiao/auto-pairs'
+[[plugins]] # 閉じカッコを自動挿入
+repo = 'jiangmiao/auto-pairs'
 
-[[plugins]] # 文字入力自動展開(カッコetc...)
-repo = 'cohama/lexima.vim'
-
-[[plugins]] 
+[[plugins]]
 repo = 'tpope/vim-commentary' # コメント化
 
 [[plugins]] # vim内でのicon表示
@@ -278,20 +137,29 @@ repo = 'junegunn/fzf.vim'
 
 [[plugins]] # coc.nvim
 repo = 'neoclide/coc.nvim'
-rev = 'release' 
+rev = 'release'
 merged = '0'
 
 [[plugins]] # ale
 repo = 'w0rp/ale'
 hook_add = '''
-  nmap <silent> <C-w>j <Plug>(ale_next_wrap)
-  nmap <silent> <C-w>k <Plug>(ale_previous_wrap)
+  let g:ale_disable_lsp = 1
+  let g:ale_lint_on_text_changed = 1
+
+  function! s:show_documentation() abort
+    if index(['vim','help'], &filetype) >= 0
+      execute 'h ' . expand('<cword>')
+    elseif coc#rpc#ready()
+      call CocActionAsync('doHover')
+    endif
+  endfunction
   highlight clear ALEError
   highlight clear ALEWarning
   let g:ale_lint_on_enter = 0
   let g:ale_sign_column_always = 1
   let g:ale_set_loclist = 0
   let g:ale_set_quickfix = 1
+  let g:ale_sign_error = '!!'
   let g:ale_sign_warning = ''
   if has('mac')
       let s:header_path = '-I/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include'
@@ -299,7 +167,7 @@ hook_add = '''
       let g:ale_cpp_gcc_options = '-std=c++14 -Wall ' . s:header_path
   endif
   let g:ale_linters = {
-              \ 'ruby': ['rubocop', 'reek'],
+              \ 'ruby': ['rubocop'],
               \ 'json': ['jsonlint'],
               \ 'Dockerfile': ['dockerfile_lint', 'hadolint'],
               \ 'scss': ['stylelint']
@@ -331,23 +199,41 @@ hook_add = '''
   let g:polyglot_disabled = ['typescript']
 '''
 
-[[plugins]]
-repo = 'liuchengxu/vista.vim'
-depends = ['coc.nvim', 'lightline.vim']
+# [[plugins]]
+# repo = 'liuchengxu/vista.vim'
+# depends = ['coc.nvim', 'lightline.vim']
 
-# [[plugins]] # 移動高速化
-# repo = 'justinmk/vim-sneak'
-# hook_add = '''
-  # let g:sneak#label = 1
-  # map f <Plug>Sneak_s
-  # map F <Plug>Sneak_S
-# '''
+[[plugins]] # 移動高速化
+repo = 'easymotion/vim-easymotion'
+hook_add = '''
+  let g:EasyMotion_do_mapping = 0
+  nmap f <Plug>(easymotion-s2)
+  " EnterかSpaceで最初の候補にジャンプ
+  let g:EasyMotion_enter_jump_first = 1
+  let g:EasyMotion_space_jump_first = 1
+  " 繰り返し
+  map ; <Plug>(easymotion-next)
+  map , <Plug>(easymotion-prev)
+  " デフォルトのインクリメントサーチをオーバーライド
+  let g:EasyMotion_smartcase = 1
+  map  / <Plug>(easymotion-sn)
+  omap / <Plug>(easymotion-tn)
+  map  n <Plug>(easymotion-next)
+  map  N <Plug>(easymotion-prev)
+  " 行移動
+  " map <silent><Leader> <Plug>(easymotion-bd-jk)
+  " nmap <silent>L <Plug>(easymotion-overwin-line)
+'''
 
-# [[plugins]] # 移動高速化
-# repo = 'easymotion/vim-easymotion'
-# hook_add = ```
-  
-# ```
+# 重いから一旦OFF(2023/01/26)
+# [[plugins]] # C-dなどをスクロールするように
+# repo = 'yuttie/comfortable-motion.vim'
+
+[[plugins]] # 分割したウインドウサイズを変更
+repo = 'simeji/winresizer'
+hook_add = '''
+  let g:winresizer_start_key = '<C-s>'
+'''
 
 [[plugins]] # 置換
 repo = 'thinca/vim-qfreplace'
@@ -361,8 +247,62 @@ repo = 'mattn/emmet-vim'
 [[plugins]] # テキストを囲う補助
 repo = 'machakann/vim-sandwich'
 
+[[plugins]] # Visualモードの選択範囲をvで拡大縮小
+repo = 'terryma/vim-expand-region'
+hook_add = '''
+  vmap v <Plug>(expand_region_expand)
+  vmap V <Plug>(expand_region_shrink)
+'''
+
+[[plugins]] # 繰り返せない操作を繰り返せるように
+repo = 'tpope/vim-repeat'
+
 [[plugins]] # 独自スニペット定義
 repo = 'SirVer/ultisnips'
 
 [[plugins]] # スニペット集
 repo = 'honza/vim-snippets'
+
+[[plugins]] # ターミナルエミュレータ
+repo = 'kassio/neoterm'
+hook_add = '''
+  let g:neoterm_default_mod='belowright'
+  let g:neoterm_size=25
+  let g:neoterm_autoscroll=1
+
+  nnoremap <silent> <C-t><C-t> :Ttoggle<CR>zz
+  tnoremap <silent> <C-t><C-t> <C-\><C-n>:Ttoggle<CR>zz
+  tnoremap <silent> <C-w> <C-\><C-n>
+  nnoremap <silent> <C-t>a :Topen<CR><C-w><C-j>i<C-l><C-\><C-n><C-w><C-k>:RSpecAll<CR>
+  nnoremap <silent> <C-t>f :Topen<CR><C-w><C-j>i<C-l><C-\><C-n><C-w><C-k>:RSpecFile<CR>
+  nnoremap <silent> <C-t>l :Topen<CR><C-w><C-j>i<C-l><C-\><C-n><C-w><C-k>:RSpecLine<CR>
+  nnoremap <silent> <C-t>c :T rails c<CR>:Topen<CR><C-w>ji
+  nnoremap <silent> <C-t>t :Topen<CR>:T tig<CR><C-w>j<C-w>_i
+
+  let g:neoterm_rspec_cmd='bundle exec rspec' " RSpecコマンド設定
+  function! RSpecFile()
+    let l:filename = expand('%')
+    call neoterm#do({ 'cmd': join([g:neoterm_rspec_cmd, l:filename]) })
+  endfunction
+  function! RSpecLine()
+      let l:filename = expand('%')
+      let l:opt = join([l:filename, line('.')], ':')
+      call neoterm#do({ 'cmd': join([g:neoterm_rspec_cmd, l:opt]) })
+  endfunction
+  command! RSpecAll call neoterm#do({ 'cmd': g:neoterm_rspec_cmd })
+  command! RSpecFile call RSpecFile()
+  command! RSpecLine call RSpecLine()
+'''
+
+[[plugins]] # operator拡張
+repo = 'kana/vim-operator-user'
+
+[[plugins]] # 置換operator
+repo = 'kana/vim-operator-replace'
+hook_add = '''
+  map _ <Plug>(operator-replace)
+'''
+
+# ステータスバーがバグる原因ぽいのでOFF(2023/01/26)
+# [[plugins]]
+# repo = 'Lokaltog/vim-powerline'
