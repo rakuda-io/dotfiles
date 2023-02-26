@@ -1,0 +1,60 @@
+"================================================================
+" Plugins
+"================================================================
+set easymotion
+set surround
+set nerdtree
+set commentary
+set ReplaceWithRegister
+set argtextobj
+set highlightedyank
+
+" easymotion keymaps
+map <leader>f <Plug>(easymotion-s)
+map <leader>j <Plug>(easymotion-j)
+map <leader>k <Plug>(easymotion-k)
+
+"================================================================
+" Basic settings
+"================================================================
+
+source ~/.config/nvim/vimrc.set
+
+let mapleader = "\<Space>"
+
+" コメントアウト後の改行時にコメントアウトを引き継がない
+autocmd FileType * setlocal formatoptions-=r
+autocmd FileType * setlocal formatoptions-=o
+
+"================================================================
+" Basic keymaps
+"================================================================
+
+source ~/.config/nvim/vimrc.keymap
+
+"================================================================
+" ideavim keymaps
+"================================================================
+
+" ideavimrc再読み込み
+nnoremap <Leader>r :source ~/.ideavimrc<CR>
+
+" ideavim用Override
+inoremap <silent> <C-k> <c-o>D<c-o>l
+
+" タブスイッチャーのCtrl+TABが何故か効かないので別でキーマップ化
+nnoremap <Leader>[ :action Switcher<CR>
+nnoremap <Leader>] :action Switcher<CR>
+
+"================================================================
+" Tabs
+"================================================================
+" Prefix key.
+nnoremap    [Tag]   <Nop>
+nmap    t [Tag]
+" タブを閉じる
+map <silent> [Tag]x :tabclose<CR>
+" 次のタブ
+map <silent> [Tag]l :tabnext<CR>
+" 前のタブ
+map <silent> [Tag]h :tabprevious<CR>
