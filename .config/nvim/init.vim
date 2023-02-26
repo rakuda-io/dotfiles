@@ -1,141 +1,39 @@
-" dein.vimの設定ファイルを読み込む
-runtime! plugins/dein.rc.vim
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
+"================================================================
+" Basic settings
+"================================================================
+source ~/.config/nvim/vimrc.set
 
-" Color scheme
-colorscheme hybrid
-
-" Leaderキー
 let mapleader = "\<Space>"
-
-" clipboard連携
-set clipboard+=unnamed
-
-" " コメントアウト(nerd-commenter) nmap <Leader>/ <Plug>NERDCommenterToggle
-"   vmap <Leader>/ <Plug>NERDCommenterToggle
-"   nmap <Leader>/a <Plug>NERDCommenterAppend
-
 " コメントアウト後の改行時にコメントアウトを引き継がない
-  autocmd FileType * setlocal formatoptions-=ro
+autocmd FileType * setlocal formatoptions-=r
+autocmd FileType * setlocal formatoptions-=o
 
-" 非アクティブウインドウの背景を白っぽくする
-augroup ChangeBackground
-  autocmd!
-  autocmd WinEnter * highlight Normal guibg=black
-  autocmd WinEnter * highlight NormalNC guibg='#474444'
-  autocmd FocusGained * highlight Normal guibg=black
-  autocmd FocusLost * highlight Normal guibg='#474444'
-augroup END
 
-" 検索のハイライトを消す
-nmap <silent><Esc><Esc> :nohl<CR>
+"================================================================
+" Basic keymaps
+"================================================================
+source ~/.config/nvim/vimrc.keymap
 
-" Yank to current file path
-nmap <leader>y :let @* = expand('%')<CR>
-
+"================================================================
+" nvim keymaps
+"================================================================
 " init.vimの設定ファイルを再読み込み
 nmap <leader>r :source ~/.config/nvim/init.vim<CR>
 
-" coc.nvimの補完候補をTABで選択可能に
-inoremap <silent><expr> <Tab>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<Tab>" :
-      \ coc#refresh()
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" 現在開いているファイルのフルパスをクリップボードにコピー
+nmap <leader>y :let @* = expand('%')<CR>
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+" 行末の空白文字を削除して保存
+nnoremap <silent> W :w<CR>:%s/\s\s*$<CR>
 
-" スニペット操作(coc)
-imap <C-l> <Plug>(coc-snippets-expand)
-let g:UltiSnipsExpandTrigger="<Nop>"
-vmap <Tab> <Plug>(coc-snippets-select)
-let g:coc_snippet_next = '<Tab>'
-let g:coc_snippet_prev = '<S-Tab>'
+" 直前の検索ワードのヒット数
+nmap <C-s> :%s///gn<CR>
 
-" 定義元ジャンプ
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" " snippets設定
-" let g:UltiSnipsSnippetDirectories=['~/.config/nvim/UltiSnips']
-" let g:UltiSnipsExpandTrigger="<C-;>"
-" let g:UltiSnipsJumpForwardTrigger="<c-n>"
-" let g:UltiSnipsJumpBackwardTrigger="<c-p>"
-
-" coc extensionsのグローバル設定
-let g:coc_global_extensions = [
-      \'coc-diagnostic', 
-      \'coc-dictionary', 
-      \'coc-docker', 
-      \'coc-emmet', 
-      \'coc-explorer',
-      \'coc-git', 
-      \'coc-highlight',
-      \'coc-html',
-      \'coc-java', 
-      \'coc-json', 
-      \'coc-lists', 
-      \'coc-markdownlint', 
-      \'coc-metals', 
-      \'coc-pairs', 
-      \'coc-snippets', 
-      \'coc-tsserver', 
-      \'coc-vetur',
-      \'coc-yaml'
-\]
-
-" ALE設定
-let g:ale_disable_lsp = 1
-let g:ale_lint_on_text_changed = 1
-
-" Emacsキーバインド
-nnoremap <silent> <C-f> <Right>
-nnoremap <silent> <C-b> <Left>
-nnoremap <silent> <C-a> <Home>
-nnoremap <silent> <C-e> <End>
-nnoremap <silent> <C-k> :EmacsKillCommand<CR>
-" nnoremap <silent> <C-y> p
-inoremap <silent> <C-p> <Up>
-inoremap <silent> <C-n> <Down>
-inoremap <silent> <C-f> <Right>
-inoremap <silent> <C-b> <Left>
-inoremap <silent> <C-a> <Home>
-inoremap <silent> <C-e> <End>
-inoremap <silent> <C-d> <Del>
-inoremap <silent> <C-h> <BS>
+" Emacsキーバインド(vim/nvimでしか動かないやつ)
 inoremap <silent> <C-k> <ESC>:EmacsKillCommand<CR>a
-" inoremap <silent> <C-Y> <ESC>pA
-inoremap <silent> <C-j> <Down>
-vnoremap <silent> <C-a> <Home>
-vnoremap <silent> <C-e> <End>
-cnoremap <C-p> <Up>
-cnoremap <C-n> <Down>
-cnoremap <C-f> <Right>
-cnoremap <C-b> <Left>
-cnoremap <C-a> <Home>
-cnoremap <C-e> <End>
-cnoremap <C-d> <Del>
 cnoremap <C-k> <Right><C-\>egetcmdline()[:getcmdpos()-2]<CR><BS>
 command! -nargs=0 EmacsKillCommand call EmacsKillCommand()
-
+" vimでもC-kで後ろの文字一括消去できるようにする自作コマンド
 function! EmacsKillCommand()
   let s:currentLine = getline('.')
   let s:nextLine = getline(line('.')+1)
@@ -159,36 +57,17 @@ function! EmacsKillCommand()
   endif
 endfunction
 
-" " Insertモードをjjで抜けて保存もする
-" inoremap <silent> jj <ESC>:w<CR>
-
-" jjでInsertモードを抜ける
-inoremap <silent> jj <ESC>
-
-" 行末の空白を削除
-nmap <silent> <leader>a :%s/\s\+$//<CR>
-
-" Visual Line modeにスペース2回で移行する
-nmap <Leader><Leader> V
-
-" 画面分割キーマップ
-nnoremap sv :<C-u>vs<CR><C-w>l
-nnoremap ss :<C-u>sp<CR><C-w>j
-
-" 行ごと移動
-nnoremap <silent><leader>j :m+<CR>==
-nnoremap <silent><leader>k :m-2<CR>==
-
-" 行の移動を方式をデフォルトと逆に
-nmap j gj
-nmap k gk
-
-" " 行末の空白をハイライト
-" augroup HighlightTrailingSpaces
-"   autocmd!
-"   autocmd VimEnter,WinEnter,ColorScheme * highlight TrailingSpaces term=underline guibg=Red ctermbg=Red
-"   autocmd VimEnter,WinEnter * match TrailingSpaces /\s\+$/
-" augroup END
+"================================================================
+" Color theme
+"================================================================
+colorscheme hybrid
+highlight Normal ctermbg=NONE guibg=NONE
+highlight NonText ctermbg=NONE guibg=NONE
+highlight LineNr ctermbg=NONE guibg=NONE
+highlight Folded ctermbg=NONE guibg=NONE
+highlight EndOfBuffer ctermbg=NONE guibg=NONE
+highlight Visual ctermbg=grey guibg=grey
+highlight CursorLine guibg=#555555
 
 " 行を動かしてない時だけカーソルハイライトを有効にする
 augroup vimrc-auto-cursorline
@@ -221,75 +100,36 @@ augroup vimrc-auto-cursorline
   endfunction
 augroup END
 
-"ファイルまたはバッファ番号を指定して差分表示。#なら裏バッファと比較
-command! -nargs=? -complete=file Diff if '<args>'=='' | browse vertical diffsplit|else| vertical diffsplit <args>|endif
-
-set number " 行を表示
-" set termguicolors " True Color表示に対応
-set incsearch  " インクリメンタルサーチを行う
-set ignorecase " 大文字と小文字を区別しない
-set smartcase  " 大文字と小文字が混在した言葉で検索を行った場合に限り、大文字と小文字を区別する
-set wrapscan   " 最後尾まで検索を終えたら次の検索で先頭に移る
-set hlsearch   " 検索結果をハイライト
-set tabstop=2     " 画面上でタブ文字が占める幅
-set softtabstop=2 " 連続した空白に対してタブキーやバックスペースキーでカーソルが動く幅
-set expandtab     " タブ入力を複数の空白入力に置き換える
-set autoindent    " 改行時に前の行のインデントを継続する
-set smartindent   " 改行時に入力された行の末尾に合わせて次の行のインデントを増減する
-" set smartindent "C系の文法に従って自動インデント、{}とかに反応する
-set shiftwidth=2  " 自動インデントでずれる幅
-set backspace=indent,eol,start " Backspaceキーの影響範囲に制限を設けない
-set whichwrap=b,s,h,l,<,>,[,]  " 行頭行末の左右移動で行をまたぐ
-set nobackup   " ファイル保存時にバックアップファイルを作らない
-set noswapfile " ファイル編集中にスワップファイルを作らない
-set wildmenu " コマンドラインモードでTABキーによるファイル名補完を有効にする
-set wildmode=full " TABキーによるファイル名補完リストをFullで出力
-set history=10000 " 履歴を保存する件数
-set showtabline=2 " 常にタブラインを表示
-set diffopt+=vertical " :diffsplitを常に左右分割にする
+" *****Alacritty移行のタイミングで透過させたかったので一旦OFF(2023/01/25)*****
+" 非アクティブウインドウの背景を白っぽくする
+" augroup ChangeBackground
+"   autocmd!
+"   autocmd WinEnter * highlight Normal guibg= dark
+"   autocmd WinEnter * highlight NormalNC guibg= '#333333'
+"   autocmd FocusGained * highlight Normal guibg= dark
+"   autocmd FocusLost * highlight Normal guibg= '#333333'
+" augroup END
 
 
-
-"""""""""""""""""""""""""""""""""""Tabs"""""""""""""""""""""""""""""""""""
-" " Anywhere SID.
-" function! s:SID_PREFIX()
-"   return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
-" endfunction
-
-" " Set tabline.
-" function! s:my_tabline()  "{{{
-"   let s = ''
-"   for i in range(1, tabpagenr('$'))
-"     let bufnrs = tabpagebuflist(i)
-"     let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
-"     let no = i  " display 0-origin tabpagenr.
-"     let mod = getbufvar(bufnr, '&modified') ? '!' : ' '
-"     let title = fnamemodify(bufname(bufnr), ':t')
-"     let title = '[' . title . ']'
-"     let s .= '%'.i.'T'
-"     let s .= '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
-"     let s .= no . ':' . title
-"     let s .= mod
-"     let s .= '%#TabLineFill# '
-"   endfor
-"   let s .= '%#TabLineFill#%T%=%#TabLine#'
-"   return s
-" endfunction "}}}
-" let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
-
+"================================================================
+" Tab 操作
+"================================================================
 " Prefix key.
 nnoremap    [Tag]   <Nop>
 nmap    t [Tag]
-" Tab jump
+" Tab jump (t1 で1番左のタブ、t2 で1番左から2番目のタブにジャンプ)
 for n in range(1, 9)
   execute 'nnoremap <silent> [Tag]'.n  ':<C-u>tabnext'.n.'<CR>'
 endfor
-" t1 で1番左のタブ、t2 で1番左から2番目のタブにジャンプ
 
+" 新しいタブを隣に作る
+map <silent> [Tag]c :tabnew<CR>
 " 新しいタブを一番右に作る
-map <silent> [Tag]c :tablast <bar> tabnew<CR>
+" map <silent> [Tag]c :tablast <bar> tabnew<CR>
 " タブを閉じる
-map <silent> [Tag]X :tabclose<CR>
+map <silent> [Tag]x :tabclose<CR>
+" 直前のタブを再度開く
+map <silent> [Tag]X :tabe#<CR>
 " 次のタブ
 map <silent> [Tag]l :tabnext<CR>
 " 前のタブ
@@ -298,12 +138,83 @@ map <silent> [Tag]h :tabprevious<CR>
 map <silent> [Tag]O :tabo<CR>
 
 
-" FernでCtrl+nでファイルツリーを表示/非表示する
+"================================================================
+" Plugins
+"================================================================
+" ========== dein.vim ==========
+runtime! plugins/dein.rc.vim
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+
+" ========== coc.nvim ==========
+" extensionsのグローバル設定
+let g:coc_global_extensions = [
+      \'coc-diagnostic',
+      \'coc-dictionary',
+      \'coc-docker',
+      \'coc-emmet',
+      \'coc-explorer',
+      \'coc-git',
+      \'coc-highlight',
+      \'coc-html',
+      \'coc-java',
+      \'coc-json',
+      \'coc-lists',
+      \'coc-markdownlint',
+      \'coc-metals',
+      \'coc-pairs',
+      \'coc-snippets',
+      \'coc-tsserver',
+      \'coc-vetur',
+      \'coc-yaml'
+\]
+
+" coc.nvimの補完候補をTABで選択可能に
+inoremap <silent><expr> <Tab>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" 定義元ジャンプ(coc)
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+
+" ========== ale ==========
+nmap <silent> ]w <Plug>(ale_next_wrap)
+nmap <silent> [w <Plug>(ale_previous_wrap)
+
+
+" ========== fern.vim ==========
+" a.) ファイルツリーを表示/非表示する
 " nnoremap <Leader>e :Fern . -reveal=% -drawer -toggle -width=40<CR>
-" FernでWindowにファイルエクスプローラーを表示する
+
+" b.) Windowにファイルエクスプローラーを表示する
 nnoremap <Leader>e :Fern . -reveal=%<CR>
 
-"" git操作
+
+" ========== vim.gitgutter ==========
 " g]で前の変更箇所へ移動する
 nnoremap g[ :GitGutterPrevHunk<CR>
 " g[で次の変更箇所へ移動する
@@ -314,9 +225,7 @@ nnoremap gh :GitGutterLineHighlightsToggle<CR>
 nnoremap gp :GitGutterPreviewHunk<CR>
 
 
-
-"""""""""""""""""""""""""""""""""""fzf-preview"""""""""""""""""""""""""""""""""""
-" Leaderキー
+" ========== fzf-preview ==========
 nmap <Leader>f <fzf-p>
 xmap <Leader>f <fzf-p>
 
@@ -355,8 +264,8 @@ nnoremap <silent> <fzf-p>m     :<C-u>CocCommand fzf-preview.Bookmarks --resume<C
 nnoremap <silent> <fzf-p><C-]> :<C-u>CocCommand fzf-preview.VistaCtags --add-fzf-arg=--query="<C-r>=expand('<cword>')<CR>"<CR>
 nnoremap <silent> <fzf-p>o     :<C-u>CocCommand fzf-preview.VistaBufferCtags<CR>
 
-" nnoremap <silent> <fzf-p>d  :<C-u>CocCommand fzf-preview.CocCurrentDiagnostics<CR>
-" nnoremap <silent> <fzf-p>D  :<C-u>CocCommand fzf-preview.CocDiagnostics<CR>
+nnoremap <silent> <fzf-p>d  :<C-u>CocCommand fzf-preview.CocCurrentDiagnostics<CR>
+nnoremap <silent> <fzf-p>D  :<C-u>CocCommand fzf-preview.CocDiagnostics<CR>
 " nnoremap <silent> <fzf-p>R :<C-u>CocCommand fzf-preview.CocReferences<CR>
 " nnoremap <silent> <fzf-p>T  :<C-u>CocCommand fzf-preview.CocTypeDefinitions<CR>
 
@@ -392,11 +301,137 @@ function! s:fzf_preview_settings() abort
   call remove(g:fzf_preview_custom_processes['git-status'], 'ctrl-x')
 endfunction
 
-" カーソル位置の単語を全ファイル検索
-nnoremap <leader>f* vawy:Rg <C-R>"<CR>
-" 選択した単語を全ファイル検索
-xnoremap f* y:Rg <C-R>"<CR>
-" " PC全体の閲覧履歴検索
-" nnoremap fR :History<CR>
-" " プロジェクト全体のGit管理下のファイル検索（.gitが複数あっても一番親ディレクトリで検索）
-" nnoremap fP :GFiles<CR>
+
+" ========== lightline.vim ==========
+set laststatus=2
+set noshowmode
+let g:lightline = {
+        \ 'colorscheme': 'wombat',
+        \ 'mode_map': {'c': 'NORMAL'},
+        \ 'active': {
+        \   'left': [
+        \     ['mode', 'paste'],
+        \     ['fugitive', 'gitgutter', 'filename'],
+        \   ],
+        \   'right': [
+				\     ['percent'],
+        \     ['fileformat', 'fileencoding', 'filetype'],
+        \   ]
+        \ },
+        \ 'component_function': {
+        \   'modified': 'MyModified',
+        \   'readonly': 'MyReadonly',
+        \   'fugitive': 'MyFugitive',
+        \   'filename': 'MyFilename',
+        \   'fileformat': 'MyFileformat',
+        \   'filetype': 'MyFiletype',
+        \   'fileencoding': 'MyFileencoding',
+        \   'mode': 'MyMode',
+        \   'syntastic': 'SyntasticStatuslineFlag',
+        \   'charcode': 'MyCharCode',
+        \   'gitgutter': 'MyGitGutter',
+        \ },
+        \ 'separator': {'right': ''},
+        \ 'subseparator': {'left': '|', 'right': '|'}
+        \ }
+
+function! MyModified()
+  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! MyReadonly()
+  return &ft !~? 'help\|vimfiler\|gundo' && &ro ? '⭤' : ''
+endfunction
+
+function! MyFilename()
+  return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+        \  &ft == 'unite' ? unite#get_status_string() :
+        \  &ft == 'vimshell' ? substitute(b:vimshell.current_dir,expand('~'),'~','') :
+        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+        \ ('' != MyModified() ? ' ' . MyModified() : '')
+endfunction
+
+function! MyFugitive()
+  try
+    if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head')
+      let _ = fugitive#head()
+      return strlen(_) ? '⭠ '._ : ''
+    endif
+  catch
+  endtry
+  return ''
+endfunction
+
+function! MyFileformat()
+  return winwidth('.') > 70 ? &fileformat : ''
+endfunction
+
+function! MyFiletype()
+  return winwidth('.') > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+endfunction
+
+function! MyFileencoding()
+  return winwidth('.') > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+endfunction
+
+function! MyMode()
+  return winwidth('.') > 60 ? lightline#mode() : ''
+endfunction
+
+function! MyGitGutter()
+  if ! exists('*GitGutterGetHunkSummary')
+        \ || ! get(g:, 'gitgutter_enabled', 0)
+        \ || winwidth('.') <= 90
+    return ''
+  endif
+  let symbols = [
+        \ g:gitgutter_sign_added . ' ',
+        \ g:gitgutter_sign_modified . ' ',
+        \ g:gitgutter_sign_removed . ' '
+        \ ]
+  let hunks = GitGutterGetHunkSummary()
+  let ret = []
+  for i in [0, 1, 2]
+    if hunks[i] > 0
+      call add(ret, symbols[i] . hunks[i])
+    endif
+  endfor
+  return join(ret, ' ')
+endfunction
+
+" https://github.com/Lokaltog/vim-powerline/blob/develop/autoload/Powerline/Functions.vim
+function! MyCharCode()
+  if winwidth('.') <= 70
+    return ''
+  endif
+
+  " Get the output of :ascii
+  redir => ascii
+  silent! ascii
+  redir END
+
+  if match(ascii, 'NUL') != -1
+    return 'NUL'
+  endif
+
+  " Zero pad hex values
+  let nrformat = '0x%02x'
+
+  let encoding = (&fenc == '' ? &enc : &fenc)
+
+  if encoding == 'utf-8'
+    " Zero pad with 4 zeroes in unicode files
+    let nrformat = '0x%04x'
+  endif
+
+  " Get the character and the numeric value from the return value of :ascii
+  " This matches the two first pieces of the return value, e.g.
+  " "<F>  70" => char: 'F', nr: '70'
+  let [str, char, nr; rest] = matchlist(ascii, '\v\<(.{-1,})\>\s*([0-9]+)')
+
+  " Format the numeric value
+  let nr = printf(nrformat, nr)
+
+  return "'". char ."' ". nr
+endfunction

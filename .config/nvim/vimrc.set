@@ -1,0 +1,31 @@
+"================================================================
+" nvim ~/.config/nvim/init.vim
+" Rubymine ~/.ideavimrc
+"================================================================
+
+set clipboard+=unnamed " クリップボード連携
+set number " 行を表示
+set termguicolors " True Color表示に対応
+set incsearch  " インクリメンタルサーチを行う
+set ignorecase " 大文字と小文字を区別しない
+set smartcase  " 大文字と小文字が混在した言葉で検索を行った場合に限り、大文字と小文字を区別する
+set wrapscan   " 最後尾まで検索を終えたら次の検索で先頭に移る
+" set hlsearch   " 検索結果をハイライト
+set nohlsearch   " easymotionでインクリメンタルサーチをオーバーライドしているので通常のハイライトをオフ
+set tabstop=2     " 画面上でタブ文字が占める幅
+set softtabstop=2 " 連続した空白に対してタブキーやバックスペースキーでカーソルが動く幅
+set expandtab     " タブ入力を複数の空白入力に置き換える
+set autoindent    " 改行時に前の行のインデントを継続する
+set smartindent   " 改行時に入力された行の末尾に合わせて次の行のインデントを増減する
+set shiftwidth=2  " 自動インデントでずれる幅
+set backspace=indent,eol,start " Backspaceキーの影響範囲に制限を設けない
+set whichwrap=b,s,h,l,<,>,[,]  " 行頭行末の左右移動で行をまたぐ
+set nobackup   " ファイル保存時にバックアップファイルを作らない
+set noswapfile " ファイル編集中にスワップファイルを作らない
+set wildmenu " コマンドラインモードでTABキーによるファイル名補完を有効にする
+set wildmode=full " TABキーによるファイル名補完リストをFullで出力
+set history=10000 " 履歴を保存する件数
+set showtabline=2 " 常にタブラインを表示
+set diffopt+=vertical " :diffsplitを常に左右分割にする
+set binary noeol " No newline at end of file対策
+
