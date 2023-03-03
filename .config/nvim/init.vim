@@ -18,7 +18,7 @@ source ~/.config/nvim/vimrc.keymap
 " nvim keymaps
 "================================================================
 " init.vimの設定ファイルを再読み込み
-nmap <leader>r :source ~/.config/nvim/init.vim<CR>
+nmap <leader>R :source ~/.config/nvim/init.vim<CR>
 
 " 現在開いているファイルのフルパスをクリップボードにコピー
 nmap <leader>y :let @* = expand('%')<CR>
