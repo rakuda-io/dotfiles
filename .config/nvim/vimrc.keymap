@@ -38,16 +38,14 @@ nnoremap s <Nop>
 vnoremap s <Nop>
 
 " Emacs風キーバインド
-nnoremap <silent> <C-a> <Home>
-nnoremap <silent> <C-e> <End>
-inoremap <silent> <C-p> <Up>
-inoremap <silent> <C-n> <Down>
-inoremap <silent> <C-f> <Right>
-inoremap <silent> <C-b> <Left>
-inoremap <silent> <C-a> <Home>
-inoremap <silent> <C-e> <End>
-inoremap <silent> <C-d> <Del>
-inoremap <silent> <C-h> <BS>
+inoremap <C-p> <Up>
+inoremap <C-n> <Down>
+inoremap <C-f> <Right>
+inoremap <C-b> <Left>
+inoremap <C-a> <Home>
+inoremap <C-e> <End>
+inoremap <C-d> <Del>
+inoremap <C-h> <BS>
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 cnoremap <C-f> <Right>
