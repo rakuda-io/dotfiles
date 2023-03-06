@@ -3,28 +3,34 @@
 "================================================================
 set easymotion
 set surround
-set nerdtree
-set commentary
-set ReplaceWithRegister
-set argtextobj
-set highlightedyank
+set nerdtree " Rubymine純正のプロジェクトツリーを nerdtree キーバインドで操作出来るように
+set commentary " コメントアウトを gcc で出来るように
+set ReplaceWithRegister " 範囲選択 -> gr で選択箇所をレジストリ内容を置き換え
+set multiple-cursors " マルチカーソルを拡張
+set highlightedyank " ヤンク時にヤンク箇所を一瞬ハイライト表示
 
-" easymotion keymaps
-map <leader>f <Plug>(easymotion-s)
+"==========easymotion==============
+map <leader>f/ <Plug>(easymotion-s)
 map <leader>j <Plug>(easymotion-j)
 map <leader>k <Plug>(easymotion-k)
+
+"=======multiple-cursors===========
+" カーソル下の文字を順々に選択(Rubymine純正のC-gキーマップをOFFにして置き換え)
+map <C-g> <A-n>
+" 選択を解除して前の選択に戻る
+map <C-S-g> <A-p>
+" 選択を解除して次へスキップ
+map <C-s> <A-x>
+
 
 "================================================================
 " Basic settings
 "================================================================
 
 source ~/.config/nvim/vimrc.set
-
 let mapleader = "\<Space>"
-
-" コメントアウト後の改行時にコメントアウトを引き継がない
-autocmd FileType * setlocal formatoptions-=r
-autocmd FileType * setlocal formatoptions-=o
+" set keep-english-in-normal " karabinaで実現しているので不要
+set visualbell " ビープ音無効化
 
 "================================================================
 " Basic keymaps
@@ -35,26 +41,135 @@ source ~/.config/nvim/vimrc.keymap
 "================================================================
 " ideavim keymaps
 "================================================================
+"==========Finder==============
+" プロジェクト内文字列検索
+nnoremap <Leader>ff :action FindInPath<CR>
 
-" ideavimrc再読み込み
-nnoremap <Leader>r :source ~/.ideavimrc<CR>
+" ファイル検索 (純正のCtrl+Cmd+Oを使うけど一応Vimと同じkeymapでも使えるように)
+nnoremap <Leader>fp :action GotoFile<CR>
 
-" ideavim用Override
-inoremap <silent> <C-k> <c-o>D<c-o>l
+" アクション検索
+nnoremap <Leader>fa :action GotoAction<CR>
+
+" 最近開いたファイル
+nnoremap <Leader>fr :action RecentFiles<CR>
+
+" 関連ファイルへのジャンプリスト(Model/View/Cotnroller/Spec/Factory)
+nnoremap <Leader>fm :action GotoRelated<CR>
+
+" 使用箇所検索
+nnoremap <Leader>fu :action ShowUsages<CR>
+
+" ジャンプ履歴
+nnoremap <Leader>fj :action RecentLocations<CR>
+
+
+"==========ジャンプ==============
+" 定義ジャンプ
+nnoremap gd :action GotoDeclaration<CR>
+
+" Git変更箇所ジャンプ
+nnoremap <Leader>jc] :action VcsShowNextChangeMarker<CR>
+nnoremap <Leader>jc[ :action VcsShowPrevChangeMarker<CR>
+
+" エラー箇所ジャンプ
+nnoremap <Leader>je] :action GotoNextError<CR>
+nnoremap <Leader>je[ :action GotoPreviousError<CR>
+
+" メソッドジャンプ
+nnoremap m :action MethodDown<CR>
+nnoremap M :action MethodUp<CR>
+
+
+"==========リファクタ==============
+" リファクタリングメニューを開く
+nnoremap <Leader>n :action RefactoringMenu<CR>
+
+" リネーム (よく使うので別でkeymap化)
+nnoremap <Leader>N :action RenameElement<CR>
+
+" リフォーマット
+" nnoremap == :action ReformatCode<CR> " ファイル全体フォーマットは影響範囲大きいから一旦OFF
+vnoremap == :action ReformatCode<CR>
+
+
+"==========RSpec==============
+" カーソル位置のRSpecを実行
+nnoremap <Leader>tl :action RunClass<CR>
+
+" 直前のSpecを再実行
+nnoremap <Leader>tr :action Rerun<CR>
+
+
+"==========Git==============
+" Gitメニューポップアップ
+nnoremap <Leader>gm :action Vcs.QuickListPopupAction<CR>
+
+" 最近のブランチリスト
+nnoremap <Leader>gb :action GitToolBox.SwitchRecentBranches<CR>
+
+" 開いてるファイルのヒストリー
+nnoremap <Leader>gh :action Vcs.ShowTabbedFileHistory<CR>
+
+" 行単位のリバート
+nnoremap U :action Vcs.RollbackChangedLines<CR>
+
+" git checkout -b
+nnoremap <Leader>gcb :action Git.CreateNewBranch<CR>
+
+" git pull origin ***
+nnoremap <Leader>gpull :action Git.Pull<CR>
+
+" git push ***
+nnoremap <Leader>gpush :action Vcs.Push<CR>
+
+" git stash save
+nnoremap <Leader>gsts :action Git.Stash<CR>
+
+" git stash list
+nnoremap <Leader>gstl :action Git.Unstash<CR>
+
+" 設定再読み込み
+nnoremap <Leader>R :source ~/.ideavimrc<CR>
+
+
+"==========Other==============
+" ターミナル表示（HHKBだとF12が押しづらいので）
+nnoremap <Leader>` :action ActivateTerminalToolWindow<CR>
+
+" Runツールウィンドウ（Rubymineのショートカットが反応しない）
+nnoremap <Leader>r :action ActivateRunToolWindow<CR>
+
+" タブのピン留めトグル
+nnoremap <Leader>p :action PinActiveTab<CR>
+
+" ブックマークトグル
+nnoremap <Leader>b :action ToggleBookmark<CR>
+
+" ブレークポイントトグル
+nnoremap <Leader>d :action ToggleLineBreakpoint<CR>
+
+" 選択箇所をハイライト表示（複数可）
+vnoremap gh :action MultiHighlight<CR><ESC>
+nnoremap ghc :action MultiHighlight.ClearAction<CR>
+
+" Structure表示
+nnoremap <Leader>s :action FileStructurePopup<CR>
+
+
+"==========Override==============
+" Rubymineの方が使い勝手が良い機能を置き換え
+nnoremap / :action Find<CR>
+nnoremap n :action FindNext<CR><ESC>
+nnoremap N :action FindPrevious<CR><ESC>
+nnoremap <C-o> :action Back<CR>
+nnoremap <C-i> :action Forward<CR>
+nnoremap g, :action JumpToNextChange<CR>
+nnoremap g; :action JumpToLastChange<CR>
+
+" Emacs風<C-k>がRubymineだと効かないので動作するように上書き
+inoremap <C-k> <c-o>D<c-o>l
 
 " タブスイッチャーのCtrl+TABが何故か効かないので別でキーマップ化
-nnoremap <Leader>[ :action Switcher<CR>
-nnoremap <Leader>] :action Switcher<CR>
-
-"================================================================
-" Tabs
-"================================================================
-" Prefix key.
-nnoremap    [Tag]   <Nop>
-nmap    t [Tag]
-" タブを閉じる
-map <silent> [Tag]x :tabclose<CR>
-" 次のタブ
-map <silent> [Tag]l :tabnext<CR>
-" 前のタブ
-map <silent> [Tag]h :tabprevious<CR>
+nnoremap <C-Tab> :action Switcher<CR>
+nnoremap <C-S-Tab> :action Switcher<CR>
