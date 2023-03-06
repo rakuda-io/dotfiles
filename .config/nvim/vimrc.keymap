@@ -37,6 +37,14 @@ vnoremap x "_x
 nnoremap s <Nop>
 vnoremap s <Nop>
 
+" コード折りたたみを無効化
+nnoremap zM <Nop>
+nnoremap zc <Nop>
+nnoremap zC <Nop>
+nnoremap zR <Nop>
+nnoremap zo <Nop>
+nnoremap zO <Nop>
+
 " Emacs風キーバインド
 inoremap <C-p> <Up>
 inoremap <C-n> <Down>
@@ -54,4 +62,3 @@ cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 cnoremap <C-d> <Del>
 cnoremap <C-y> <C-r>*
-
